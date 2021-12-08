@@ -1,0 +1,11 @@
+type MarketInfo = 
+ record {
+   description: text;
+   id: principal;
+   name: text;
+ };
+type Market = 
+ service {
+   info: () -> (MarketInfo);
+ };
+service : (text, text) -> Market
