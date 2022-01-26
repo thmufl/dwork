@@ -4,10 +4,20 @@ import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
 
-const MarketList = (props: { data: MarketInfo[] }) => {
-	const { data } = props
+import { useCreateMarket } from '../hooks/useDWork'
+
+const MarketList = (props: { data: MarketInfo[], isLoading: any, isError: any}) => {
+	const { data, isLoading, isError } = props
 	
   const { register, watch } = useForm<{ name: string }>()
+
+  if (isLoading) {
+		return <Spinner animation="border" variant="secondary" />
+	}
+
+	if (isError) {
+		return <p>Error</p>
+	}
 
 	return (
 		<>

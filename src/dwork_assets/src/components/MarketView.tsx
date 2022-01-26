@@ -10,6 +10,8 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
+import { useMarketInfo } from '../hooks'
+
 const MarketView = () => {
 	const { marketId } = useParams()
 
@@ -26,27 +28,34 @@ const MarketView = () => {
     setActor(actor)
 	}, [])
 
+	const { data, isLoading, isError } = useMarketInfo(
+		createActor(marketId!, {
+      agentOptions: {
+        identity: authClient?.getIdentity()
+      }
+    }),
+		() => console.log('success'),
+		() => console.log('error')
+	)
 
-	// const { data, isLoading, isError } = useMarketInfos(
-	// 	actor,
-	// 	() => console.log('success'),
-	// 	() => console.log('error')
-	// )
+	if (isLoading) {
+		return <Spinner animation="border" variant="secondary" />
+	}
 
-	// if (isLoading) {
-	// 	return <Spinner animation="border" variant="secondary" />
-	// }
-
-	// if (isError) {
-	// 	return <p>Error</p>
-	// }
+	if (isError) {
+		return <p>Error</p>
+	}
 
 	return (
-		<>
+		<Container>
 			<h2>Market</h2>
       { marketId } <br /> { authClient?.getIdentity().getPrincipal().toText() }
-      <Button onClick={() => console.log(actor?.info()) }>Info</Button>
-		</>
+			<div>
+				name: { data?.name }
+				description: { data?.description }
+			</div>
+      {/* <Button onClick={async () => console.log(await actor?.info()) }>Info</Button> */}
+		</Container>
 	)
 }
 export default MarketView

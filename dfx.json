@@ -5,6 +5,7 @@
       "type": "motoko"
     },
     "dwork_assets": {
+      "main": "src/dwork_assets/src/index.html",
       "dependencies": [
         "dwork"
       ],

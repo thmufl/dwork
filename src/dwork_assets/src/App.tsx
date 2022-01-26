@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Container, Button, Row, Col } from 'react-bootstrap'
 
-import { Dashboard, MarketView } from './components'
+import { TopNav, Dashboard, MarketView } from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent'
@@ -14,9 +14,13 @@ import { Principal } from '@dfinity/principal'
 import { dwork, createActor, canisterId } from '../../declarations/dwork'
 import { _SERVICE } from '../../declarations/dwork/dwork.did'
 
+import './scss/main.css'
+
 const queryClient = new QueryClient()
 
-export const AuthClientContext = React.createContext<AuthClient | undefined>(undefined)
+export const AuthClientContext = React.createContext<AuthClient | undefined>(
+	undefined
+)
 const identityProviderUrl = 'http://localhost:8080'
 
 const App = () => {
@@ -27,9 +31,9 @@ const App = () => {
 		AuthClient.create().then((client) => {
 			setAuthClient(client)
 		})
-	}, [])
+	}, [actor])
 
-	const handleLogin = () => {
+	const doLogin = () => {
 		authClient!.login({
 			identityProvider: identityProviderUrl,
 			onSuccess: () => {
@@ -39,40 +43,36 @@ const App = () => {
 					},
 				})
 				setActor(actor)
+        console.log(`Login: ${authClient?.getIdentity().getPrincipal().toText()}`)
 			},
 			onError: (error) => console.log(`Login error: ${error}`),
 		})
 	}
 
-	const handleLogout = () => {
-		authClient?.logout().then(() => setActor(dwork))
-	}
+	const doLogout = () => {
+    authClient?.logout().then(() => setActor(dwork))
+  }
 
-	const isAnonymous = () =>
-		authClient?.getIdentity().getPrincipal().toText() ===
+	const isLoggedIn = () => {
+		return authClient?.getIdentity().getPrincipal().toText() !==
 		Principal.anonymous().toText()
+  }
 
-	const handleCreateMarket = async () => {
+	const handleCreateMarket = async () =>
 		await actor.createMarket('test', 'test')
-	}
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AuthClientContext.Provider value={authClient}>
 				<Router>
-					<Container className="app">
-						<h1>DWORK APP</h1>
-						<div>
-							Identity: {authClient?.getIdentity().getPrincipal().toText()}
-						</div>
-						{isAnonymous() && <Button onClick={handleLogin}>Login</Button>}
-						{!isAnonymous() && <Button onClick={handleLogout}>Logout</Button>}
-						{!isAnonymous() && (
-							<Button onClick={handleCreateMarket}>Create market</Button>
-						)}
-					</Container>
+					<TopNav
+						login={doLogin}
+						logout={doLogout}
+						isLoggedIn={isLoggedIn}
+					/>
 					<Routes>
 						<Route path="/" element={<Dashboard actor={actor} />} />
+						<Route path="/markets/-1/create" element={<MarketView />} />
 						<Route path="/markets/:marketId" element={<MarketView />} />
 					</Routes>
 				</Router>

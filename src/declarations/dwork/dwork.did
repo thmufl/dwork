@@ -4,9 +4,8 @@ type MarketInfo =
    id: principal;
    name: text;
  };
-type MarketId = text;
 service : {
   createMarket: (text, text) -> (MarketInfo);
-  deleteMarket: (MarketId) -> ();
-  readMarkets: () -> (vec MarketInfo);
+  deleteMarket: (text) -> (opt MarketInfo);
+  marketInfos: () -> (vec MarketInfo);
 }

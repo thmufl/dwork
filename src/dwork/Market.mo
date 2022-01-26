@@ -10,6 +10,5 @@ shared({ caller = initializer }) actor class Market(name : Text, description : T
     Debug.print(debug_show(caller) # ": info()");
     let id = Principal.fromActor(this);
     { id; name; description }
-  };    
+  };
 };
-

@@ -2,6 +2,8 @@
 
 ## Starting
 
+home % git clone https://github.com/dfinity/internet-identity
+
 internet-identity % dfx start --clean --background
 internet-identity % II_ENV=development dfx deploy --no-wallet --argument '(null)'
 internet-identity % dfx canister call internet_identity init_salt
