@@ -3,16 +3,24 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import { ActorSubclass } from '@dfinity/agent'
+
 import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
+import { dwork, createActor, canisterId } from '../../../declarations/dwork'
 
 import { AuthClientContext } from '../App'
 import { MarketList } from './'
-import { useCreateMarket, useMarketInfos } from '../hooks/useDWork'
+import { useCreateMarket, useReadMarkets } from '../hooks/useDWork'
+
 import { Principal } from '@dfinity/principal'
 
-const Dashboard = (props: { actor: ActorSubclass<_SERVICE> }) => {
-	const { actor } = props
+const Dashboard = () => {
 	const authClient = useContext(AuthClientContext)
+	const getMarketsActor = () =>
+		createActor(canisterId!, {
+			agentOptions: {
+				identity: authClient?.getIdentity(),
+			},
+		})
 
 	const {
 		mutateAsync: createMarket,
@@ -21,31 +29,31 @@ const Dashboard = (props: { actor: ActorSubclass<_SERVICE> }) => {
 		isError: isErrorCreate,
 		error: errorCreate,
 	} = useCreateMarket(
-		actor,
+		getMarketsActor(),
 		() => console.log('success create market'),
 		() => console.log('error create market')
+	)
+
+	const { data, isLoading, isError } = useReadMarkets(
+		getMarketsActor(),
+		() => console.log('success'),
+		() => console.log('error')
 	)
 
 	const createTestMarket = async () => {
 		const marketInfo = createMarket({
 			id: Principal.anonymous(),
-			name: 'Test Market',
+			name: 'Test Market 1',
 			description: 'The test market...',
 		})
 		console.log(await marketInfo)
 	}
 
-	const { data, isLoading, isError } = useMarketInfos(
-		actor,
-		() => console.log('success'),
-		() => console.log('error')
-	)
-
 	return (
 		<Container>
 			<h2>Dashboard</h2>
 			<p className="small">
-				Identity: {authClient?.getIdentity().getPrincipal().toText()}
+				User: {authClient?.getIdentity().getPrincipal().toText()}
 			</p>
 
 			<Button onClick={createTestMarket}>Create Test Market</Button>

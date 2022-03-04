@@ -6,6 +6,6 @@ type MarketInfo =
  };
 service : {
   createMarket: (text, text) -> (MarketInfo);
-  deleteMarket: (text) -> (opt MarketInfo);
-  marketInfos: () -> (vec MarketInfo);
+  deleteMarket: (principal) -> ();
+  readMarkets: () -> (vec MarketInfo);
 }

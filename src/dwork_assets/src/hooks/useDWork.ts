@@ -3,6 +3,7 @@ import { ActorSubclass } from '@dfinity/agent'
 import { Principal } from '@dfinity/principal'
 import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
 
+
 export const useCreateMarket = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess:
@@ -26,14 +27,14 @@ export const useCreateMarket = (
 	return useMutation(createMarket, { onSuccess, onError })
 }
 
-export const useMarketInfos = (
+export const useReadMarkets = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: MarketInfo[]) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const marketInfos = () => actor.marketInfos()
+	const readMarkets = () => actor.readMarkets()
 
-	return useQuery<MarketInfo[], Error>('market-infos', marketInfos, {
+	return useQuery<MarketInfo[], Error>('market-infos', readMarkets, {
 		onSuccess,
 		onError,
 	})
@@ -44,19 +45,19 @@ export const useDeleteMarket = (
 	onSuccess:
 		| ((
 				data: any,
-				variables: string,
+				variables: Principal,
 				context: unknown
 		  ) => void | Promise<unknown>)
 		| undefined,
 	onError:
 		| ((
 				error: unknown,
-				variables: string,
+				variables: Principal,
 				context: unknown
 		  ) => void | Promise<unknown>)
 		| undefined
 ) => {
-	const deleteMarket = (marketId: string) => actor.deleteMarket(marketId)
+	const deleteMarket = (marketId: Principal) => actor.deleteMarket(marketId)
 	return useMutation(deleteMarket, { onSuccess, onError })
 }
 

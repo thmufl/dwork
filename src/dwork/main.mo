@@ -7,39 +7,32 @@ import Array "mo:base/Array";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
-import Market "Market";
+import Markets "Markets";
 import Types "Types";
 
 actor {
-  //type List = List.List;
-  type Market = Market.Market;
+  type Market = Markets.Market;
   type MarketInfo = Types.MarketInfo;
 
-  private stable var markets: List.List<Market> = List.nil();
+  let markets = HashMap.HashMap<Principal, Market>(8, Principal.equal, Principal.hash);
 
   public shared({ caller }) func createMarket(name: Text, description: Text) : async MarketInfo {
-    let market = await Market.Market(name, description);
-    markets := List.push(market, markets);
-    Debug.print(debug_show(caller) # " created Market: " # Principal.toText(Principal.fromActor(market)));
-    await market.info();
+    let market = await Markets.Market({ name; description });
+    markets.put(Principal.fromActor(market), market);
+    Debug.print(debug_show(caller) # " create Market: " # Principal.toText(Principal.fromActor(market)));
+    await market.readInfo();
   };
 
-  public shared({ caller }) func marketInfos() : async [MarketInfo] {
-    Debug.print("Caller: " # debug_show(caller) # ": Markets.marketInfos()");
-
-    func info(market : Market) : async MarketInfo {
-      await market.info();
-    };
-
-    let marketArr = List.toArray(markets);
+  public shared({ caller }) func readMarkets() : async [MarketInfo] {
     var infos = [] : [MarketInfo];
-    for(market in Array.vals(marketArr)) {
-      infos := Array.append(infos, [await info(market)]);
+    for(market in markets.vals()) {
+      infos := Array.append(infos, [await market.readInfo()]);
     };
     infos;
   };
 
-  public shared({ caller }) func deleteMarket(id: Text) : async ?MarketInfo {
-    null;
+  public shared({ caller }) func deleteMarket(marketId: Principal) : async () {
+    Debug.print(debug_show(caller) # " delete Market: " # Principal.toText(marketId));
+    markets.delete(marketId);
   };
 };

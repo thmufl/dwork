@@ -1,0 +1,212 @@
+{
+	"markets": [
+		{
+			"id": "-1",
+			"name": "Market THREE",
+			"description": "Market THREE is...",
+      "contractNegotiation": "FIRST_SIGNED",
+			"concepts": [
+				{
+					"id": "gardener",
+					"preferredLabel": "Gardener",
+					"description": "A gardener is..."
+				},
+				{
+					"id": "technican",
+					"preferredLabel": "Technician",
+					"description": "A technician is..."
+				},
+				{
+					"id": "translator",
+					"preferredLabel": "Translator",
+					"description": "A translator is..."
+				}
+			],
+			"users": [
+				{
+					"id": "5mha7-4bx3t-gyzhn-rpywz-54ynl-ihghd-cx3nc-6ll3h-3ghhq-z3slx-kqe",
+					"firstName": "Alice",
+					"lastName": "Wonder",
+					"description": "Alice is...",
+					"concepts": [
+						{
+							"id": "gardener",
+							"preferredLabel": "Gardener",
+							"description": "A gardener is..."
+						}
+					],
+					"calendar": [
+						{
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Alice is available.",
+							"date": {
+								"begin": "2021-11-08T09:00:00",
+								"end": "2021-11-08T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+						{
+							"id": "-1",
+							"title": "Breakfast with Fox",
+							"description": "In this period Alice is not available for d.work.",
+							"date": {
+								"begin": "2021-11-08T08:00:00",
+								"end": "2021-11-08T09:30:00"
+							},
+							"state": {"BOOKED": null}
+						},
+            {
+							"id": "-1",
+							"title": "Dinner with Owl",
+							"description": "In this period Alice is not available for d.work.",
+							"date": {
+								"begin": "2021-11-08T16:00:00",
+								"end": "2021-11-08T16:45:00"
+							},
+							"state": {"BOOKED": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Alice is available.",
+							"date": {
+								"begin": "2021-11-12T09:00:00",
+								"end": "2021-11-12T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Alice is available.",
+							"date": {
+								"begin": "2021-11-16T09:00:00",
+								"end": "2021-11-16T12:00:00"
+							},
+							"state": {"RESERVED": null}
+						}
+					]
+				},
+				{
+					"id": "gns67-ncn4x-ladbg-uoo3g-toqfw-nga56-dfg6e-3vvdv-sygnb-4p32b-aae",
+					"firstName": "Bob",
+					"lastName": "Sponge",
+					"description": "Bob is...",
+					"concepts": [
+						{
+							"id": "gardener",
+							"preferredLabel": "Gardener",
+							"description": "A gardener is..."
+						},
+						{
+							"id": "technican",
+							"preferredLabel": "Technician",
+							"description": "A technician is..."
+						}
+					],
+					"calendar": [
+						{
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-08T09:00:00",
+								"end": "2021-11-08T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+						{
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-09T09:00:00",
+								"end": "2021-11-09T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+						{
+							"id": "-1",
+							"title": "Breakfast with Fox",
+							"description": "In this period Bob is not available for d.work.",
+							"date": {
+								"begin": "2021-11-08T08:00:00",
+								"end": "2021-11-08T09:30:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-10T09:00:00",
+								"end": "2021-11-10T18:00:00"
+							},
+							"state": {"RESERVED": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-11T09:00:00",
+								"end": "2021-11-11T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-12T09:00:00",
+								"end": "2021-11-12T18:00:00"
+							},
+							"state": {"BOOKED": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-13T09:00:00",
+								"end": "2021-11-13T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						},
+            {
+							"id": "-1",
+							"title": "Available for d.work",
+							"description": "In this period Bob is available.",
+							"date": {
+								"begin": "2021-11-14T09:00:00",
+								"end": "2021-11-14T18:00:00"
+							},
+							"state": {"AVAILABLE": null}
+						}
+					]
+				},
+				{
+					"id": "gtexs-kjyn2-rtyjs-nc3ng-mzm4z-w37qi-jvnem-l7rwf-zikvr-unlff-6qe",
+					"firstName": "Donald",
+					"lastName": "Duck",
+					"description": "Donald is..."
+				},
+				{
+					"id": "6c6ch-gk4rx-vtsgj-opkzu-nlae6-mkvyb-n5tns-4yqwa-liqgy-el4c4-cae",
+					"firstName": "Emil",
+					"lastName": "Detective",
+					"description": "Emil is..."
+				},
+				{
+					"id": "2vxsx-fae",
+					"firstName": "Default",
+					"lastName": "Default",
+					"description": "Default user."
+				}
+			]
+		}
+	]
+}

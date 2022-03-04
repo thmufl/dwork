@@ -6,7 +6,13 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Container, Button, Row, Col } from 'react-bootstrap'
 
-import { TopNav, Dashboard, MarketView } from './components'
+import {
+	TopNav,
+	Dashboard,
+	MarketView,
+	MarketForm,
+	CreateMarketForm,
+} from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent'
@@ -43,40 +49,44 @@ const App = () => {
 					},
 				})
 				setActor(actor)
-        console.log(`Login: ${authClient?.getIdentity().getPrincipal().toText()}`)
+				console.log(
+					`Login: ${authClient?.getIdentity().getPrincipal().toText()}`
+				)
 			},
 			onError: (error) => console.log(`Login error: ${error}`),
 		})
 	}
 
 	const doLogout = () => {
-    authClient?.logout().then(() => setActor(dwork))
-  }
+		authClient?.logout().then(() => setActor(dwork))
+	}
 
 	const isLoggedIn = () => {
-		return authClient?.getIdentity().getPrincipal().toText() !==
-		Principal.anonymous().toText()
-  }
-
-	const handleCreateMarket = async () =>
-		await actor.createMarket('test', 'test')
+		return (
+			authClient?.getIdentity().getPrincipal().toText() !==
+			Principal.anonymous().toText()
+		)
+	}
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AuthClientContext.Provider value={authClient}>
 				<Router>
-					<TopNav
-						login={doLogin}
-						logout={doLogout}
-						isLoggedIn={isLoggedIn}
-					/>
+					<TopNav login={doLogin} logout={doLogout} isLoggedIn={isLoggedIn} />
+
 					<Routes>
-						<Route path="/" element={<Dashboard actor={actor} />} />
-						<Route path="/markets/-1/create" element={<MarketView />} />
+						<Route path="/" element={<Dashboard />} />
 						<Route path="/markets/:marketId" element={<MarketView />} />
+						<Route
+							path="/markets/:marketId/create"
+							element={<CreateMarketForm />}
+						/>
+						<Route path="/markets/:marketId/update" element={<MarketForm />} />
+						<Route path="/markets/:marketId/delete" element={<Dashboard />} />
 					</Routes>
 				</Router>
 			</AuthClientContext.Provider>
+
 			<ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
 		</QueryClientProvider>
 	)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 
 import { AuthClientContext } from '../App'
@@ -10,30 +10,25 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
-import { useMarketInfo } from '../hooks'
+import { useReadMarketInfo } from '../hooks'
 
 const MarketView = () => {
 	const { marketId } = useParams()
+	console.log("MarketView",  marketId)
 
-  const authClient = useContext(AuthClientContext)
+	const authClient = useContext(AuthClientContext)
 
-	const [actor, setActor] = useState<ActorSubclass<_SERVICE>>()
-
-	useEffect(() => {
-    const actor = createActor(marketId!, {
-      agentOptions: {
-        identity: authClient?.getIdentity()
-      }
-    })
-    setActor(actor)
-	}, [])
-
-	const { data, isLoading, isError } = useMarketInfo(
+	const getMarketActor = () =>
 		createActor(marketId!, {
-      agentOptions: {
-        identity: authClient?.getIdentity()
-      }
-    }),
+			agentOptions: {
+				identity: authClient?.getIdentity(),
+			},
+		})
+
+	useEffect(() => {}, [])
+
+	const { data, isLoading, isError } = useReadMarketInfo(
+		getMarketActor(),
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -49,12 +44,24 @@ const MarketView = () => {
 	return (
 		<Container>
 			<h2>Market</h2>
-      { marketId } <br /> { authClient?.getIdentity().getPrincipal().toText() }
+			<div>User: {authClient?.getIdentity().getPrincipal().toText()}</div>
+
 			<div>
-				name: { data?.name }
-				description: { data?.description }
+				<Row>
+					<Col>Id</Col>
+					<Col xs={9}>{marketId}</Col>
+				</Row>
+				<Row>
+					<Col>Name</Col>
+					<Col xs={9}>{data?.name}</Col>
+				</Row>
+				<Row>
+					<Col>Description</Col>
+					<Col xs={9}>{data?.description}</Col>
+				</Row>
 			</div>
-      {/* <Button onClick={async () => console.log(await actor?.info()) }>Info</Button> */}
+
+			<Link to={`/markets/${marketId}/update`}>Edit</Link>
 		</Container>
 	)
 }

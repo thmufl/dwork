@@ -6,8 +6,8 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'createMarket' : IDL.Func([IDL.Text, IDL.Text], [MarketInfo], []),
-    'deleteMarket' : IDL.Func([IDL.Text], [IDL.Opt(MarketInfo)], []),
-    'marketInfos' : IDL.Func([], [IDL.Vec(MarketInfo)], []),
+    'deleteMarket' : IDL.Func([IDL.Principal], [], []),
+    'readMarkets' : IDL.Func([], [IDL.Vec(MarketInfo)], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

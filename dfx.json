@@ -4,10 +4,14 @@
       "main": "src/dwork/main.mo",
       "type": "motoko"
     },
+    "market": {
+      "main": "src/dwork/Markets.mo",
+      "type": "motoko"
+    },
     "dwork_assets": {
       "main": "src/dwork_assets/src/index.html",
       "dependencies": [
-        "dwork"
+        "dwork", "market"
       ],
       "frontend": {
         "entrypoint": "src/dwork_assets/src/index.html"
