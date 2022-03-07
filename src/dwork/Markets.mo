@@ -31,28 +31,9 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     ();
   };
 
-  // User
-
-  public shared({ caller }) func registerUser(user : UserInfo) : async () {
-    Debug.print(debug_show(caller) # ": Market.registerUser()");
-    userRegistry.register(user);
-  };
-
-  public query func readUser(id: Principal) : async ?UserInfo {
-    let user = switch (userRegistry.read(id)) {
-      case null null;
-      case (?user) ?user.info();
-    };
-  };
-
-  public query func userInfos() : async [UserInfo] {
-    userRegistry.userInfos();
-  };
-
   // Concept
 
-  public shared({ caller }) func createConcept(concept : ConceptInfo) : async () {
-    Debug.print(debug_show(caller) # ": Market.createConcept()");
+  public shared({ caller }) func createConcept(concept : ConceptInfo) : async Nat32 {
     conceptScheme.create(concept);
   };
 
@@ -63,7 +44,7 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     };
   };
 
-  public shared({ caller }) func updateConcept(concept : ConceptInfo) : async () {
+  public shared({ caller }) func updateConcept(concept : ConceptInfo) : async Nat32 {
     conceptScheme.update(concept);
   };
 
@@ -71,7 +52,33 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     conceptScheme.delete(id);
   };
 
-  public query func conceptInfos() : async [ConceptInfo] {
-    conceptScheme.conceptInfos();
+  public query func listConcepts() : async [ConceptInfo] {
+    conceptScheme.list();
+  };
+
+  // User
+
+  public shared({ caller }) func addUser(user : UserInfo) : async () {
+    Debug.print(debug_show(caller) # ": add user");
+    userRegistry.add(user);
+  };
+
+  public query func readUser(id: Principal) : async ?UserInfo {
+    let user = switch (userRegistry.read(id)) {
+      case null null;
+      case (?user) ?user.info();
+    };
+  };
+
+  public shared({ caller }) func updateUser(user : UserInfo) : async UserInfo {
+    userRegistry.update(user);
+  };
+
+  public shared({ caller }) func deleteUser(id: Principal) : async () {
+    userRegistry.delete(id);
+  };
+
+  public query func listUsers() : async [UserInfo] {
+    userRegistry.list();
   };
 };

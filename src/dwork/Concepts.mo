@@ -28,10 +28,13 @@ module Concepts = {
 
   public class ConceptScheme() {
     let concepts = HashMap.HashMap<Nat32, Concept>(8, Nat32.equal, func hash(number : Nat32) : Hash.Hash { number; });
+    var nextId = Nat32.fromNat(1);
 
-    public func create(concept : ConceptInfo) : () {
-      let newConcept = Concepts.Concept(concept);
-      concepts.put(concept.id, newConcept);
+    public func create(init : ConceptInfo) : Nat32 {
+      let newConcept = Concepts.Concept({ id = nextId; preferredLabel = init.preferredLabel; description = init.description });
+      concepts.put(newConcept.getId(), newConcept);
+      nextId += 1;
+      newConcept.getId();
     };
 
     public func read(id: Nat32) : ?Concept {
@@ -41,17 +44,17 @@ module Concepts = {
       };
     };
 
-    public func update(concept : ConceptInfo) : () {
+    public func update(concept : ConceptInfo) : Nat32 {
       let newConcept = Concepts.Concept(concept);
       let oldConcept = concepts.replace(concept.id, newConcept);
-      ();
+      newConcept.getId();
     };
 
     public func delete(id: Nat32) : () {
       concepts.delete(id);
     };
 
-    public func conceptInfos() : [ConceptInfo] {
+    public func list() : [ConceptInfo] {
       var infos = [] : [ConceptInfo];
       for(concept in concepts.vals()) {
         infos := Array.append(infos, [concept.info()]);

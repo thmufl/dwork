@@ -63,7 +63,7 @@ const MarketForm = () => {
 
 	return (
 		<Container>
-			<h2>Update Market</h2>
+			<h2>Edit Market</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control placeholder="Id" value={marketId} disabled />
 				<Form.Control {...register('name')} placeholder="Name" />
@@ -78,7 +78,15 @@ const MarketForm = () => {
 					type="submit"
 					disabled={isLoading || isUpdating}
 				>
-					Update
+					{ data ? 'Save' : 'Create' }
+				</Button>
+				<Button
+					className="m-1"
+					variant="primary"
+					onClick={() => navigate(`/markets/${marketId}`)}
+					disabled={isLoading || isUpdating}
+				>
+					Cancel
 				</Button>
 			</Form>
 		</Container>

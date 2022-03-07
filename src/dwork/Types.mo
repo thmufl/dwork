@@ -15,6 +15,7 @@ module {
     id : Principal;
     firstName : Text;
     lastName : Text;
+    description : Text;
   };
 
   public type ConceptInfo = {

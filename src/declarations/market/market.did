@@ -1,5 +1,6 @@
 type UserInfo = 
  record {
+   description: text;
    firstName: text;
    id: principal;
    lastName: text;
@@ -12,16 +13,18 @@ type MarketInfo =
  };
 type Market = 
  service {
-   conceptInfos: () -> (vec ConceptInfo) query;
-   createConcept: (ConceptInfo) -> ();
+   addUser: (UserInfo) -> ();
+   createConcept: (ConceptInfo) -> (nat32);
    deleteConcept: (nat32) -> ();
+   deleteUser: (principal) -> ();
+   listConcepts: () -> (vec ConceptInfo) query;
+   listUsers: () -> (vec UserInfo) query;
    readConcept: (nat32) -> (opt ConceptInfo) query;
    readInfo: () -> (MarketInfo) query;
    readUser: (principal) -> (opt UserInfo) query;
-   registerUser: (UserInfo) -> ();
-   updateConcept: (ConceptInfo) -> ();
+   updateConcept: (ConceptInfo) -> (nat32);
    updateInfo: (MarketInfo) -> ();
-   userInfos: () -> (vec UserInfo) query;
+   updateUser: (UserInfo) -> (UserInfo);
  };
 type ConceptInfo = 
  record {

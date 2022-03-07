@@ -16,9 +16,10 @@ module Users = {
   type Concept = Concepts.Concept;
 
   public class User(init : UserInfo) {
-    let { id } = init;
+    var id = init.id;
     var firstName = init.firstName;
     var lastName = init.lastName;
+    var description = init.description;
 
     let concepts = HashMap.HashMap<Nat32, Concept>(8, Nat32.equal, func hash(number : Nat32) : Hash.Hash { number; });
 
@@ -35,7 +36,7 @@ module Users = {
     };
 
     public func info() : UserInfo {
-      { id; firstName; lastName };
+      { id; firstName; lastName; description };
     };
   };
 
@@ -43,7 +44,7 @@ module Users = {
 
     let users = HashMap.HashMap<Principal, User>(8, Principal.equal, Principal.hash);
 
-    public func register(user : UserInfo) : () {
+    public func add(user : UserInfo) : () {
       let newUser = Users.User(user);
       users.put(user.id, newUser);
     };
@@ -55,15 +56,17 @@ module Users = {
       };
     };
 
-    public func update(user : User) : ?User {
-      users.replace(user.getId(), user);
+    public func update(user : UserInfo) : UserInfo {
+      let newUser = Users.User(user);
+      let oldUser = users.replace(user.id, newUser);
+      newUser.info();
     };
 
     public func delete(id: Principal) : () {
       users.delete(id);
     };
 
-    public func userInfos() : [UserInfo] {
+    public func list() : [UserInfo] {
       var infos = [] : [UserInfo];
       for(user in users.vals()) {
         infos := Array.append(infos, [user.info()]);

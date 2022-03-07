@@ -12,6 +12,10 @@ import {
 	MarketView,
 	MarketForm,
 	CreateMarketForm,
+	ConceptView,
+	ConceptForm,
+	UserView,
+	UserForm,
 } from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
@@ -77,12 +81,29 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/markets/:marketId" element={<MarketView />} />
-						<Route
-							path="/markets/:marketId/create"
-							element={<CreateMarketForm />}
-						/>
+						<Route path="/markets/create" element={<CreateMarketForm />} />
 						<Route path="/markets/:marketId/update" element={<MarketForm />} />
 						<Route path="/markets/:marketId/delete" element={<Dashboard />} />
+						<Route
+							path="/markets/:marketId/concepts/create"
+							element={<ConceptForm />}
+						/>
+						<Route
+							path="/markets/:marketId/concepts/:conceptId"
+							element={<ConceptView />}
+						/>
+						<Route
+							path="/markets/:marketId/concepts/:conceptId/update"
+							element={<ConceptForm />}
+						/>
+						<Route
+							path="/markets/:marketId/users/:userId"
+							element={<UserView />}
+						/>
+						<Route
+							path="/markets/:marketId/users/:userId/update"
+							element={<UserForm />}
+						/>
 					</Routes>
 				</Router>
 			</AuthClientContext.Provider>

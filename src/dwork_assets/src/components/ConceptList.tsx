@@ -1,43 +1,44 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { dwork, createActor, canisterId } from '../../../declarations/dwork'
+import { _SERVICE, ConceptInfo } from '../../../declarations/market/market.did'
+import { createActor } from '../../../declarations/market'
 
 import { AuthClientContext } from '../App'
-import { useDeleteMarket } from '../hooks/useDWork'
+import { useDeleteConcept, useListConcepts } from '../hooks/useMarket'
 import { Actor } from '@dfinity/agent'
 
-const MarketList = (props: {
-	data: MarketInfo[]
+const ConceptList = (props: {
+	data: ConceptInfo[]
 	isLoading: any
 	isError: any
 }) => {
+	const { marketId } = useParams()
 	const { data, isLoading, isError } = props
 
 	const authClient = useContext(AuthClientContext)
 	const navigate = useNavigate()
 
 	const getActor = () =>
-		createActor(canisterId!, {
+		createActor(marketId!, {
 			agentOptions: {
 				identity: authClient?.getIdentity(),
 			},
 		})
 
 	const {
-		mutateAsync: deleteMarket,
+		mutateAsync: deleteConcept,
 		isLoading: isDeleting,
 		isSuccess: isSuccessDelete,
 		isError: isErrorDelete,
 		error: errorDelete,
-	} = useDeleteMarket(
+	} = useDeleteConcept(
 		getActor(),
-		() => console.log('success delete market'),
-		() => console.log('error delete market')
+		() => console.log('success delete concept'),
+		() => console.log('error delete concept')
 	)
 
 	const { register, watch } = useForm<{ name: string }>()
@@ -52,35 +53,35 @@ const MarketList = (props: {
 
 	return (
 		<>
-			<Link to={`/markets/create`}>Create Market</Link>
+			<Link to={`/markets/${marketId}/concepts/create`}>Create Concept</Link>
 			<Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
-					placeholder="Filter markets by name."
+					placeholder="Filter concepts by label."
 				/>
 			</Form>
 
 			<ListGroup>
 				{data
 					?.filter(
-						(market) =>
-							market.name
+						(concept) =>
+						concept.preferredLabel
 								.toLowerCase()
 								.includes(watch('name')?.toLowerCase()) ||
 							watch('name') === undefined
 					)
-					.map((market, index) => (
+					.map((concept, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/markets/${market.id}`}>
-								{market.name} ({market.id.toText()})
+							<Link to={`/markets/${marketId}/concepts/${concept.id}`}>
+								{concept.preferredLabel}
 							</Link>
 							<br />
-							{market.description}
+							{concept.description}
 							<br />
 							<Button
 								className="alert-danger"
 								onClick={async () => {
-									await deleteMarket(market.id)
+									await deleteConcept(concept.id)
 									navigate(`/`)
 								}}
 							>
@@ -92,4 +93,4 @@ const MarketList = (props: {
 		</>
 	)
 }
-export default MarketList
+export default ConceptList

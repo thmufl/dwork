@@ -38,7 +38,7 @@ const CreateMarketForm = () => {
 	const { register, watch, handleSubmit, reset } = useForm<MarketInfo>()
 
 	const onSubmit = async (data: { name: string; description: string }) => {
-		const market = await createMarket({ id: Principal.anonymous(), ...data })
+		const market = await createMarket({ ...data, id: Principal.anonymous() })
 		navigate(`/markets/${market.id}`)
 	}
 
@@ -54,6 +54,7 @@ const CreateMarketForm = () => {
 		<Container>
 			<h2>Create Market</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control {...register('name')} placeholder="Name" />
 				<Form.Control
 					{...register('description')}

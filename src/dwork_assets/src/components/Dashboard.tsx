@@ -40,23 +40,12 @@ const Dashboard = () => {
 		() => console.log('error')
 	)
 
-	const createTestMarket = async () => {
-		const marketInfo = createMarket({
-			id: Principal.anonymous(),
-			name: 'Test Market 1',
-			description: 'The test market...',
-		})
-		console.log(await marketInfo)
-	}
-
 	return (
 		<Container>
 			<h2>Dashboard</h2>
 			<p className="small">
 				User: {authClient?.getIdentity().getPrincipal().toText()}
 			</p>
-
-			<Button onClick={createTestMarket}>Create Test Market</Button>
 
 			<h3>Markets</h3>
 			<MarketList
