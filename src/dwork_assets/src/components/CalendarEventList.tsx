@@ -4,19 +4,19 @@ import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { _SERVICE, ConceptInfo } from '../../../declarations/market/market.did'
-import { createActor } from '../../../declarations/market'
+import { _SERVICE, CalendarEvent } from '../../../declarations/calendar/calendar.did'
+import { createActor } from '../../../declarations/calendar'
 
 import { AuthClientContext } from '../App'
-import { useDeleteConcept, useListConcepts } from '../hooks/useMarket'
+import { useDeleteCalendarEvent, useListCalendarEvents } from '../hooks/useCalendar'
 import { Actor } from '@dfinity/agent'
 
-const ConceptList = (props: {
-	data: ConceptInfo[]
+const CalendarEventList = (props: {
+	data: CalendarEvent[]
 	isLoading: any
 	isError: any
 }) => {
-	const { marketId } = useParams()
+	const { userId } = useParams()
 	const { data, isLoading, isError } = props
 
 	const authClient = useContext(AuthClientContext)
@@ -33,34 +33,34 @@ const ConceptList = (props: {
 
 	return (
 		<>
-			<Link to={`/markets/${marketId}/concepts/create`}>Create Concept</Link>
+			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/events/create`}>Create Event</Link>
 			<Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
-					placeholder="Filter concepts by label."
+					placeholder="Filter events by label."
 				/>
 			</Form>
 
 			<ListGroup>
 				{data
 					?.filter(
-						(concept) =>
-						concept.preferredLabel
+						(event) =>
+						event.title
 								.toLowerCase()
 								.includes(watch('name')?.toLowerCase()) ||
 							watch('name') === undefined
 					)
-					.map((concept, index) => (
+					.map((event, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/markets/${marketId}/concepts/${concept.id}`}>
-								{concept.preferredLabel}
+							<Link to={`/calendars/${userId}/events/${event.id}`}>
+								{event.title}
 							</Link>
 							<br />
-							{concept.description}
+							{event.description}
 						</ListGroup.Item>
 					))}
 			</ListGroup>
 		</>
 	)
 }
-export default ConceptList
+export default CalendarEventList

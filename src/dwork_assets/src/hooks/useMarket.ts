@@ -141,7 +141,6 @@ export const useListUsers = (
 	onError: ((err: Error) => void) | undefined
 ) => {
 	const action = () => actor.listUsers()
-
 	return useQuery<UserInfo[], Error>('user-infos', action, {
 		onSuccess,
 		onError,

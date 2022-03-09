@@ -8,6 +8,10 @@
       "main": "src/dwork/Markets.mo",
       "type": "motoko"
     },
+    "calendar": {
+      "main": "src/dwork/calendar.mo",
+      "type": "motoko"
+    },
     "dwork_assets": {
       "main": "src/dwork_assets/src/index.html",
       "dependencies": [

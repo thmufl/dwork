@@ -1,0 +1,20 @@
+type TimeInterval = 
+ record {
+   begin: Time;
+   end: Time;
+ };
+type Time = int;
+type CalendarEvent = 
+ record {
+   date: TimeInterval;
+   description: text;
+   id: nat32;
+   title: text;
+ };
+service : {
+  createEvent: (CalendarEvent) -> (nat32);
+  deleteEvent: (principal, nat32) -> ();
+  listEvents: (principal) -> (vec CalendarEvent) query;
+  readEvent: (principal, nat32) -> (opt CalendarEvent) query;
+  updateEvent: (CalendarEvent) -> (nat32);
+}

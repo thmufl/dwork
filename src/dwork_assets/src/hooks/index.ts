@@ -16,6 +16,14 @@ export { useReadUser } from './useMarket'
 export { useUpdateUser } from './useMarket'
 export { useListUsers } from './useMarket'
 
+export { useUpdateCalendarEvent } from './useCalendar'
+export { useReadCalendarEvent } from './useCalendar'
+export { useDeleteCalendarEvent } from './useCalendar'
+export { useListCalendarEvents } from './useCalendar'
+
+
+
+
 
 
 

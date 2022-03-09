@@ -12,7 +12,7 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 import { createActor } from '../../../declarations/market'
 
 import { useReadUser, useReadMarketInfo, useListConcepts, useListUsers } from '../hooks'
-import { ConceptList, UserList } from './'
+import { ConceptList, UserList } from '.'
 
 const MarketView = () => {
 	const { marketId } = useParams()
@@ -53,28 +53,30 @@ const MarketView = () => {
 		() => console.log('success read user'),
 		() => console.log('error read user')
 	)
+	
+	const {
+		data: dataUsers,
+		isLoading: isLoadingUsers,
+		isError: isErrorUsers,
+	} = useListUsers(
+		getActor(),
+		() => console.log('success'),
+		() => console.log('error')
+	)
 
 	if (isLoading || isLoadingUser || isLoadingConcepts) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isError || isErrorUser || isErrorConcepts) {
+	if (isError) {
 		return <p>Error</p>
 	}
 
 	return (
 		<Container>
-			<div className="small">
-				User:
-				<Link
-					to={`/markets/${marketId}/users/${authClient
-						?.getIdentity()
-						.getPrincipal()
-						.toText()}`}
-					className="m-1"
-				>
-					{ dataUser?.firstName } { dataUser?.lastName }
-				</Link>
+			<h2>Market Admin</h2>
+			<div>
+				User: {authClient?.getIdentity().getPrincipal().toText()}{' '}
 				<Link
 					to={`/markets/${marketId}/users/${authClient
 						?.getIdentity()
@@ -87,8 +89,11 @@ const MarketView = () => {
 				</Link>
 			</div>
 
-			<h2>Market</h2>
 			<div>
+				<Row>
+					<Col>Id</Col>
+					<Col xs={9}>{marketId}</Col>
+				</Row>
 				<Row>
 					<Col>Name</Col>
 					<Col xs={9}>{data?.name}</Col>
@@ -99,12 +104,23 @@ const MarketView = () => {
 				</Row>
 			</div>
 
+			<Link to={`/markets/${marketId}/update`} className="m-1">
+				Edit Info
+			</Link>
+
 			<h3>Concepts</h3>
 			<ConceptList
 				data={dataConcepts || []}
 				isLoading={isLoadingConcepts}
 				isError={isErrorConcepts}
 			></ConceptList>
+
+			<h3>Users</h3>
+			<UserList
+				data={dataUsers || []}
+				isLoading={isLoadingUsers}
+				isError={isErrorUsers}
+			></UserList>
 		</Container>
 	)
 }

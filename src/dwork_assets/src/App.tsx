@@ -10,12 +10,16 @@ import {
 	TopNav,
 	Dashboard,
 	MarketView,
+	MarketAdminView,
 	MarketForm,
 	CreateMarketForm,
 	ConceptView,
 	ConceptForm,
 	UserView,
 	UserForm,
+	CalendarView,
+	CalendarEventView,
+	CalendarEventForm,
 } from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
@@ -81,6 +85,10 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/markets/:marketId" element={<MarketView />} />
+						<Route
+							path="/markets/:marketId/admin"
+							element={<MarketAdminView />}
+						/>
 						<Route path="/markets/create" element={<CreateMarketForm />} />
 						<Route path="/markets/:marketId/update" element={<MarketForm />} />
 						<Route path="/markets/:marketId/delete" element={<Dashboard />} />
@@ -104,10 +112,26 @@ const App = () => {
 							path="/markets/:marketId/users/:userId/update"
 							element={<UserForm />}
 						/>
+
+						<Route
+							path="/calendars/:userId"
+							element={<CalendarView />}
+						/>
+							<Route
+							path="/calendars/:userId/events/:eventId"
+							element={<CalendarEventView />}
+						/>
+						<Route
+							path="/calendars/:userId/events/create"
+							element={<CalendarEventForm />}
+						/>
+							<Route
+							path="/calendars/:userId/events/:eventId/update"
+							element={<CalendarEventForm />}
+						/>
 					</Routes>
 				</Router>
 			</AuthClientContext.Provider>
-
 			<ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
 		</QueryClientProvider>
 	)

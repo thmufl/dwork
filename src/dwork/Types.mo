@@ -34,34 +34,12 @@ module {
     end : Time;
   };
 
-  // public type Bid = {
-  //   id : Nat;
-  //   bidder : Principal;
-  //   concepts : [Concept];
-  //   time: TimeInterval;
-  //   price : {
-  //     floor : ?Float;
-  //     ceiling : ?Float;
-  //   };
-  // };
-
-  // public type Ask = {
-  //   id: Nat;
-  //   asker: Principal;
-  //   concepts : [Concept];
-  //   time: TimeInterval;
-  //   price : {
-  //     floor : ?Float;
-  //     ceiling : ?Float;
-  //   };
-  // };
-
-  // public type CalendarEntry = {
-  //   id: Nat;
-  //   owner : Principal;
-  //   date : TimeInterval;
-  //   place : Text;
-  //   title : Text;
-  //   description : Text;
-  // };
+  public type CalendarEvent = {
+    id : Nat32;
+    // creator : Principal;
+    date : TimeInterval;
+    //place : Text;
+    title : Text;
+    description : Text;
+  };
 };

@@ -2,12 +2,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import { ActorSubclass } from '@dfinity/agent'
+import {
+	createActor as createCalendarActor,
+	canisterId as calendarCanisterId,
+} from '../../../declarations/calendar'
 
 import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { dwork, createActor, canisterId } from '../../../declarations/dwork'
+import { createActor as createDWorkActor, canisterId as dWorkCanisterId } from '../../../declarations/dwork'
 
 import { AuthClientContext } from '../App'
+
+import { CalendarEventList } from './'
+import { useListCalendarEvents } from '../hooks'
+
 import { MarketList } from './'
 import { useCreateMarket, useReadMarkets } from '../hooks/useDWork'
 
@@ -15,27 +22,34 @@ import { Principal } from '@dfinity/principal'
 
 const Dashboard = () => {
 	const authClient = useContext(AuthClientContext)
-	const getMarketsActor = () =>
-		createActor(canisterId!, {
+
+	const getCalendarActor = () =>
+		createCalendarActor(calendarCanisterId!, {
+			agentOptions: {
+				identity: authClient?.getIdentity(),
+			},
+		})
+
+	const getDWorkActor = () =>
+		createDWorkActor(dWorkCanisterId!, {
 			agentOptions: {
 				identity: authClient?.getIdentity(),
 			},
 		})
 
 	const {
-		mutateAsync: createMarket,
-		isLoading: isCreating,
-		isSuccess: isSuccessCreate,
-		isError: isErrorCreate,
-		error: errorCreate,
-	} = useCreateMarket(
-		getMarketsActor(),
-		() => console.log('success create market'),
-		() => console.log('error create market')
+		data: dataEvents,
+		isLoading: isLoadingEvents,
+		isError: isErrorEvents,
+	} = useListCalendarEvents(
+		getCalendarActor(),
+		authClient?.getIdentity() ? authClient?.getIdentity().getPrincipal() : Principal.anonymous(),
+		() => console.log('success'),
+		() => console.log('error')
 	)
 
 	const { data, isLoading, isError } = useReadMarkets(
-		getMarketsActor(),
+		getDWorkActor(),
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -46,6 +60,18 @@ const Dashboard = () => {
 			<p className="small">
 				User: {authClient?.getIdentity().getPrincipal().toText()}
 			</p>
+
+			<h3>Calendar</h3>
+			<CalendarEventList
+				data={dataEvents || []}
+				isLoading={isLoadingEvents}
+				isError={isErrorEvents}
+			></CalendarEventList>
+			<Link
+				to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}`}
+			>
+				Go
+			</Link>
 
 			<h3>Markets</h3>
 			<MarketList
