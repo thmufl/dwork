@@ -6,19 +6,19 @@ import { useForm } from 'react-hook-form'
 import { Principal } from '@dfinity/principal'
 import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
 
-import { _SERVICE, UserInfo } from '../../../declarations/market/market.did'
+import { _SERVICE, ProfileInfo } from '../../../declarations/market/market.did'
 import { createActor } from '../../../declarations/market'
 
 import { AuthClientContext } from '../App'
-import { useAddUser, useReadUser, useUpdateUser, useDeleteUser } from '../hooks/useMarket'
+import { useAddProfile, useReadProfile, useUpdateProfile, useDeleteProfile } from '../hooks/useMarket'
 
-const UserForm = () => {
+const ProfileForm = () => {
 	const { marketId, userId } = useParams()
 	const authClient = useContext(AuthClientContext)
 	const navigate = useNavigate()
 
 	const [added, setAdded] = useState(false);
-  const { register, watch, handleSubmit, reset } = useForm<UserInfo>()
+  const { register, watch, handleSubmit, reset } = useForm<ProfileInfo>()
 
 	const getActor = (): ActorSubclass<_SERVICE> =>
 		createActor(marketId!, {
@@ -27,7 +27,7 @@ const UserForm = () => {
 			},
 		})
 
-	const { data, isLoading, isError } = useReadUser(
+	const { data, isLoading, isError } = useReadProfile(
 		getActor(),
 		Principal.fromText(userId!),
 		() => console.log('success read user'),
@@ -35,39 +35,39 @@ const UserForm = () => {
 	)
 
 	const {
-		mutateAsync: addUser,
+		mutateAsync: addProfile,
 		isLoading: isAdding,
 		isSuccess: isSuccessAdd,
 		isError: isErrorAdd,
 		error: errorAdd,
-	} = useAddUser(
+	} = useAddProfile(
 		getActor(),
-		() => console.log('success add user'),
-		() => console.log('error add user')
+		() => console.log('success add profile'),
+		() => console.log('error add profile')
 	)
 
 	const {
-		mutateAsync: updateUser,
+		mutateAsync: updateProfile,
 		isLoading: isUpdating,
 		isSuccess: isSuccessUpdate,
 		isError: isErrorUpdate,
 		error: errorUpdate,
-	} = useUpdateUser(
+	} = useUpdateProfile(
 		getActor(),
-		() => console.log('success update user'),
-		() => console.log('error update user')
+		() => console.log('success update profile'),
+		() => console.log('error update profile')
 	)
 
 	const {
-		mutateAsync:deleteUser,
+		mutateAsync:deleteProfile,
 		isLoading: isDeleting,
 		isSuccess: isSuccessDelete,
 		isError: isErrorDelete,
 		error: errorDelete,
-	} = useDeleteUser(
+	} = useDeleteProfile(
 		getActor(),
-		() => console.log('success delete user'),
-		() => console.log('error delete user')
+		() => console.log('success delete profile'),
+		() => console.log('error delete profile')
 	)
 
 	useEffect(() => {
@@ -76,9 +76,8 @@ const UserForm = () => {
 	}, [data])
 
 	const onSubmit = async (data: { id: string, firstName: string, lastName: string, description: string }) => {
-		console.log("added", added)
-		added ? await updateUser({ ...data, id: Principal.fromText(data.id)}) : await addUser({ ...data, id: Principal.fromText(data.id)})
-		navigate(`/markets/${marketId}/users/${userId}`)
+		added ? await updateProfile({ ...data, id: Principal.fromText(data.id)}) : await addProfile({ ...data, id: Principal.fromText(data.id)})
+		navigate(`/markets/${marketId}/profiles/${userId}`)
 	}
 
 	if (isLoading || isAdding) {
@@ -91,7 +90,7 @@ const UserForm = () => {
 
 	return (
 		<Container>
-			<h2>Edit User</h2>
+			<h2>Edit Profile</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} placeholder="Id" />
 				<Form.Control {...register('firstName')} required placeholder="First Name" />
@@ -113,7 +112,7 @@ const UserForm = () => {
 				<Button
 					className="m-1"
 					variant="danger"
-					onClick={async () => { await deleteUser(Principal.fromText(userId!)); navigate(`/markets/${marketId}/`) }}
+					onClick={async () => { await deleteProfile(Principal.fromText(userId!)); navigate(`/markets/${marketId}/`) }}
 					disabled={isLoading || isAdding}
 				>
 					Delete
@@ -122,7 +121,7 @@ const UserForm = () => {
 				<Button
 					className="m-1"
 					variant="primary"
-					onClick={() => navigate(`/markets/${marketId}/users/${userId}`)}
+					onClick={() => navigate(`/markets/${marketId}/profiles/${userId}`)}
 					disabled={isLoading || isAdding}
 				>
 					Cancel
@@ -131,4 +130,4 @@ const UserForm = () => {
 		</Container>
 	)
 }
-export default UserForm
+export default ProfileForm

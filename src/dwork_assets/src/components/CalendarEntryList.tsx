@@ -4,15 +4,15 @@ import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { _SERVICE, CalendarEvent } from '../../../declarations/calendar/calendar.did'
+import { _SERVICE, CalendarEntry } from '../../../declarations/calendar/calendar.did'
 import { createActor } from '../../../declarations/calendar'
 
 import { AuthClientContext } from '../App'
-import { useDeleteCalendarEvent, useListCalendarEvents } from '../hooks/useCalendar'
+import { useDeleteCalendarEntry, useListCalendarEntries } from '../hooks/useCalendar'
 import { Actor } from '@dfinity/agent'
 
-const CalendarEventList = (props: {
-	data: CalendarEvent[]
+const CalendarEntryList = (props: {
+	data: CalendarEntry[]
 	isLoading: any
 	isError: any
 }) => {
@@ -33,11 +33,11 @@ const CalendarEventList = (props: {
 
 	return (
 		<>
-			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/events/create`}>Create Event</Link>
+			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/create`}>Create Entry</Link>
 			<Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
-					placeholder="Filter events by label."
+					placeholder="Filter entries by label."
 				/>
 			</Form>
 
@@ -52,7 +52,7 @@ const CalendarEventList = (props: {
 					)
 					.map((event, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/calendars/${userId}/events/${event.id}`}>
+							<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/${event.id}`}>
 								{event.title}
 							</Link>
 							<br />
@@ -63,4 +63,4 @@ const CalendarEventList = (props: {
 		</>
 	)
 }
-export default CalendarEventList
+export default CalendarEntryList

@@ -9,13 +9,13 @@ import Nat32 "mo:base/Nat32";
 import Types "Types";
 import Concepts "Concepts";
 
-module Users = {
+module Profiles = {
 
-  type UserInfo = Types.UserInfo;
+  type ProfileInfo = Types.ProfileInfo;
   type ConceptInfo = Types.ConceptInfo;
   type Concept = Concepts.Concept;
 
-  public class User(init : UserInfo) {
+  public class Profile(init : ProfileInfo) {
     var id = init.id;
     var firstName = init.firstName;
     var lastName = init.lastName;
@@ -35,41 +35,41 @@ module Users = {
       infos;
     };
 
-    public func info() : UserInfo {
+    public func info() : ProfileInfo {
       { id; firstName; lastName; description };
     };
   };
 
-  public class UserRegistry() {
+  public class ProfileRegistry() {
 
-    let users = HashMap.HashMap<Principal, User>(8, Principal.equal, Principal.hash);
+    let profiles = HashMap.HashMap<Principal, Profile>(8, Principal.equal, Principal.hash);
 
-    public func add(user : UserInfo) : () {
-      let newUser = Users.User(user);
-      users.put(user.id, newUser);
+    public func add(profile : ProfileInfo) : () {
+      let newProfile = Profiles.Profile(profile);
+      profiles.put(profile.id, newProfile);
     };
 
-    public func read(id: Principal) : ?User {
-      let user = switch (users.get(id)) {
+    public func read(id: Principal) : ?Profile {
+      let profile = switch (profiles.get(id)) {
         case null null;
-        case (?user) ?user;
+        case (?profile) ?profile;
       };
     };
 
-    public func update(user : UserInfo) : UserInfo {
-      let newUser = Users.User(user);
-      let oldUser = users.replace(user.id, newUser);
-      newUser.info();
+    public func update(profile : ProfileInfo) : ProfileInfo {
+      let newProfile = Profiles.Profile(profile);
+      let oldProfile = profiles.replace(profile.id, newProfile);
+      newProfile.info();
     };
 
     public func delete(id: Principal) : () {
-      users.delete(id);
+      profiles.delete(id);
     };
 
-    public func list() : [UserInfo] {
-      var infos = [] : [UserInfo];
-      for(user in users.vals()) {
-        infos := Array.append(infos, [user.info()]);
+    public func list() : [ProfileInfo] {
+      var infos = [] : [ProfileInfo];
+      for(profile in profiles.vals()) {
+        infos := Array.append(infos, [profile.info()]);
       };
       infos;
     };

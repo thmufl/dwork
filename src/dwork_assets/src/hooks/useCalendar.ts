@@ -3,51 +3,51 @@ import { Actor, ActorSubclass } from '@dfinity/agent'
 import { Principal } from '@dfinity/principal'
 import {
 	_SERVICE,
-	CalendarEvent,
+	CalendarEntry,
 } from '../../../declarations/calendar/calendar.did'
 
-import { CalendarEventAdapter } from '../types'
+import { CalendarEntryAdapter } from '../types'
 
-export const useUpdateCalendarEvent = (
+export const useUpdateCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: number) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (event: CalendarEventAdapter) => {
-		let adaptedEvent: CalendarEvent = {
-			...event,
+	const action = (entry: CalendarEntryAdapter) => {
+		let adaptedEntry: CalendarEntry = {
+			...entry,
 			date: {
 				begin:
-					typeof event.date.begin === 'string'
-						? BigInt(Date.parse(event.date.begin))
-						: BigInt(event.date.begin),
+					typeof entry.date.begin === 'string'
+						? BigInt(Date.parse(entry.date.begin))
+						: BigInt(entry.date.begin),
 				end:
-					typeof event.date.end === 'string'
-						? BigInt(Date.parse(event.date.end))
-						: BigInt(event.date.end),
+					typeof entry.date.end === 'string'
+						? BigInt(Date.parse(entry.date.end))
+						: BigInt(entry.date.end),
 			},
 		}
-		return adaptedEvent.id === 0
-			? actor.createEvent(adaptedEvent)
-			: actor.updateEvent(adaptedEvent)
+		return adaptedEntry.id === 0
+			? actor.createEntry(adaptedEntry)
+			: actor.updateEntry(adaptedEntry)
 	}
 	return useMutation(action, { onSuccess, onError })
 }
 
-export const useReadCalendarEvent = (
+export const useReadCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	user: Principal,
 	id: number,
-	onSuccess: ((data: CalendarEventAdapter) => void) | undefined,
+	onSuccess: ((data: CalendarEntryAdapter) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = () => actor.readEvent(user, id)
-	return useQuery<CalendarEvent[], Error, CalendarEventAdapter | undefined>(
-		['calendar-event', user.toText(), id],
+	const action = () => actor.readEntry(user, id)
+	return useQuery<CalendarEntry[], Error, CalendarEntryAdapter | undefined>(
+		['calendar-entry', user.toText(), id],
 		action,
 		{
 			onError,
-			select: (data: CalendarEvent[]) =>
+			select: (data: CalendarEntry[]) =>
 				data && data[0]
 					? {
 							...data[0],
@@ -65,25 +65,25 @@ export const useReadCalendarEvent = (
 	)
 }
 
-export const useDeleteCalendarEvent = (
+export const useDeleteCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	user: Principal,
 	onSuccess: ((data: void) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (id: number) => actor.deleteEvent(user, id)
+	const action = (id: number) => actor.deleteEntry(user, id)
 	return useMutation(action, { onSuccess, onError })
 }
 
-export const useListCalendarEvents = (
+export const useListCalendarEntries = (
 	actor: ActorSubclass<_SERVICE>,
 	user: Principal,
-	onSuccess: ((data: CalendarEvent[]) => void) | undefined,
+	onSuccess: ((data: CalendarEntry[]) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = () => actor.listEvents(user)
+	const action = () => actor.listEntries(user)
 
-	return useQuery<CalendarEvent[], Error>(['calendar-events', user.toText()], action, {
+	return useQuery<CalendarEntry[], Error>(['calendar-entries', user.toText()], action, {
 		onSuccess,
 		onError,
 	})

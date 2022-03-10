@@ -11,15 +11,15 @@ export { useUpdateConcept } from './useMarket'
 export { useDeleteConcept } from './useMarket'
 export { useListConcepts } from './useMarket'
 
-export { useAddUser } from './useMarket'
-export { useReadUser } from './useMarket'
-export { useUpdateUser } from './useMarket'
-export { useListUsers } from './useMarket'
+export { useAddProfile } from './useMarket'
+export { useReadProfile } from './useMarket'
+export { useUpdateProfile } from './useMarket'
+export { useListProfiles } from './useMarket'
 
-export { useUpdateCalendarEvent } from './useCalendar'
-export { useReadCalendarEvent } from './useCalendar'
-export { useDeleteCalendarEvent } from './useCalendar'
-export { useListCalendarEvents } from './useCalendar'
+export { useUpdateCalendarEntry } from './useCalendar'
+export { useReadCalendarEntry } from './useCalendar'
+export { useDeleteCalendarEntry } from './useCalendar'
+export { useListCalendarEntries } from './useCalendar'
 
 
 

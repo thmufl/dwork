@@ -4,7 +4,7 @@ type TimeInterval =
    end: Time;
  };
 type Time = int;
-type CalendarEvent = 
+type CalendarEntry = 
  record {
    date: TimeInterval;
    description: text;
@@ -12,9 +12,9 @@ type CalendarEvent =
    title: text;
  };
 service : {
-  createEvent: (CalendarEvent) -> (nat32);
-  deleteEvent: (principal, nat32) -> ();
-  listEvents: (principal) -> (vec CalendarEvent) query;
-  readEvent: (principal, nat32) -> (opt CalendarEvent) query;
-  updateEvent: (CalendarEvent) -> (nat32);
+  createEntry: (CalendarEntry) -> (nat32);
+  deleteEntry: (principal, nat32) -> ();
+  listEntries: (principal) -> (vec CalendarEntry) query;
+  readEntry: (principal, nat32) -> (opt CalendarEntry) query;
+  updateEntry: (CalendarEntry) -> (nat32);
 }

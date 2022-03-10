@@ -11,9 +11,9 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
-import { useReadUser } from '../hooks'
+import { useReadProfile } from '../hooks'
 
-const UserView = () => {
+const ProfileView = () => {
 	const { marketId, userId } = useParams()
 	const authClient = useContext(AuthClientContext)
 
@@ -26,7 +26,7 @@ const UserView = () => {
 
 	// useEffect(() => {}, [])
 
-	const { data, isLoading, isError } = useReadUser(
+	const { data, isLoading, isError } = useReadProfile(
 		getActor(),
 		Principal.fromText(userId!),
 		() => console.log('success'),
@@ -43,7 +43,7 @@ const UserView = () => {
 
 	return (
 		<Container>
-			<h2>User</h2>
+			<h2>Profile</h2>
 			<div>User: {authClient?.getIdentity().getPrincipal().toText()}</div>
 
 			<div>
@@ -65,9 +65,9 @@ const UserView = () => {
 				</Row>
 			</div>
 
-			<Link to={`/markets/${marketId}/users/${userId}/update`} className="m-1">Edit User</Link>
+			<Link to={`/markets/${marketId}/profiles/${userId}/update`} className="m-1">Edit Profile</Link>
 			<Link to={`/markets/${marketId}`} className="m-1">Back to Market</Link>
 		</Container>
 	)
 }
-export default UserView
+export default ProfileView

@@ -1,26 +1,26 @@
 export const idlFactory = ({ IDL }) => {
   const Time = IDL.Int;
   const TimeInterval = IDL.Record({ 'end' : Time, 'begin' : Time });
-  const CalendarEvent = IDL.Record({
+  const CalendarEntry = IDL.Record({
     'id' : IDL.Nat32,
     'title' : IDL.Text,
     'date' : TimeInterval,
     'description' : IDL.Text,
   });
   return IDL.Service({
-    'createEvent' : IDL.Func([CalendarEvent], [IDL.Nat32], []),
-    'deleteEvent' : IDL.Func([IDL.Principal, IDL.Nat32], [], []),
-    'listEvents' : IDL.Func(
+    'createEntry' : IDL.Func([CalendarEntry], [IDL.Nat32], []),
+    'deleteEntry' : IDL.Func([IDL.Principal, IDL.Nat32], [], []),
+    'listEntries' : IDL.Func(
         [IDL.Principal],
-        [IDL.Vec(CalendarEvent)],
+        [IDL.Vec(CalendarEntry)],
         ['query'],
       ),
-    'readEvent' : IDL.Func(
+    'readEntry' : IDL.Func(
         [IDL.Principal, IDL.Nat32],
-        [IDL.Opt(CalendarEvent)],
+        [IDL.Opt(CalendarEntry)],
         ['query'],
       ),
-    'updateEvent' : IDL.Func([CalendarEvent], [IDL.Nat32], []),
+    'updateEntry' : IDL.Func([CalendarEntry], [IDL.Nat32], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

@@ -8,19 +8,19 @@ import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
 
 import {
 	_SERVICE,
-	CalendarEvent
+	CalendarEntry
 } from '../../../declarations/calendar/calendar.did'
 import { createActor, canisterId } from '../../../declarations/calendar'
 
 import { AuthClientContext } from '../App'
-import { useReadCalendarEvent, useUpdateCalendarEvent, useDeleteCalendarEvent } from '../hooks'
-import { CalendarEventAdapter } from "../types"
+import { useReadCalendarEntry, useUpdateCalendarEntry, useDeleteCalendarEntry } from '../hooks'
+import { CalendarEntryAdapter } from "../types"
 
-const CalendarEventForm = () => {
-	const { userId, eventId } = useParams()
+const CalendarEntryForm = () => {
+	const { userId, entryId } = useParams()
 	const authClient = useContext(AuthClientContext)
 	const navigate = useNavigate()
-	const { register, watch, handleSubmit, reset } = useForm<CalendarEventAdapter>()
+	const { register, watch, handleSubmit, reset } = useForm<CalendarEntryAdapter>()
 
 	const getActor = (): ActorSubclass<_SERVICE> =>
 		createActor(canisterId!, {
@@ -29,33 +29,33 @@ const CalendarEventForm = () => {
 			},
 		})
 
-	const { data, isLoading, isError } = useReadCalendarEvent(
+	const { data, isLoading, isError } = useReadCalendarEntry(
 		getActor(),
 		Principal.fromText(userId!),
-		eventId ? parseInt(eventId) : 0,
-		() => console.log('success read calendar event'),
-		() => console.log('error read calendar event')
+		entryId ? parseInt(entryId) : 0,
+		() => console.log('success read calendar entry'),
+		() => console.log('error read calendar entry')
 	)
 
 	const {
-		mutateAsync: updateEvent,
+		mutateAsync: updateEntry,
 		isLoading: isUpdating,
 		isSuccess: isSuccessUpdate,
 		isError: isErrorUpdate,
 		error: errorUpdate,
-	} = useUpdateCalendarEvent(
+	} = useUpdateCalendarEntry(
 		getActor(),
-		() => console.log('success update calendar event'),
-		() => console.log('error update calendar event')
+		() => console.log('success update calendar entry'),
+		() => console.log('error update calendar entry')
 	)
 
 	const {
-		mutateAsync: deleteEvent,
+		mutateAsync: deleteEntry,
 		isLoading: isDeleting,
 		isSuccess: isSuccessDelete,
 		isError: isErrorDelete,
 		error: errorDelete,
-	} = useDeleteCalendarEvent(
+	} = useDeleteCalendarEntry(
 		getActor(),
 		Principal.fromText(userId!),
 		() => console.log('success delete concept'),
@@ -66,9 +66,9 @@ const CalendarEventForm = () => {
 		reset(data)
 	}, [data])
 
-	const onSubmit = async (data: CalendarEventAdapter) => {
-		const eventId = await updateEvent({ ...data, id: Number(data.id || 0) })
-		navigate(`/calendars/${userId}/events/${eventId}`)
+	const onSubmit = async (data: CalendarEntryAdapter) => {
+		const entryId = await updateEntry({ ...data, id: Number(data.id || 0) })
+		navigate(`/calendars/${userId}/entries/${entryId}`)
 	}
 
 	if (isLoading || isUpdating || isDeleting) {
@@ -81,7 +81,7 @@ const CalendarEventForm = () => {
 
 	return (
 		<Container>
-			<h2>Edit Calendar Event</h2>
+			<h2>Edit Calendar Entry</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control
@@ -115,7 +115,7 @@ const CalendarEventForm = () => {
 					className="m-1"
 					variant="danger"
 					onClick={async () => {
-						await deleteEvent(Number(eventId))
+						await deleteEntry(Number(entryId))
 						navigate(`/calendars/${userId}/`)
 					}}
 					disabled={isLoading || isUpdating || isDeleting}
@@ -135,4 +135,4 @@ const CalendarEventForm = () => {
 		</Container>
 	)
 }
-export default CalendarEventForm
+export default CalendarEntryForm

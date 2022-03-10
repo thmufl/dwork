@@ -1,4 +1,4 @@
-export type CalendarEventAdapter = {
+export type CalendarEntryAdapter = {
   id: number,
   title: string,
   description: string,

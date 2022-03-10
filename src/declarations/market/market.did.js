@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  const UserInfo = IDL.Record({
+  const ProfileInfo = IDL.Record({
     'id' : IDL.Principal,
     'description' : IDL.Text,
     'lastName' : IDL.Text,
@@ -16,18 +16,22 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
   });
   const Market = IDL.Service({
-    'addUser' : IDL.Func([UserInfo], [], []),
+    'addProfile' : IDL.Func([ProfileInfo], [], []),
     'createConcept' : IDL.Func([ConceptInfo], [IDL.Nat32], []),
     'deleteConcept' : IDL.Func([IDL.Nat32], [], []),
-    'deleteUser' : IDL.Func([IDL.Principal], [], []),
+    'deleteProfile' : IDL.Func([IDL.Principal], [], []),
     'listConcepts' : IDL.Func([], [IDL.Vec(ConceptInfo)], ['query']),
-    'listUsers' : IDL.Func([], [IDL.Vec(UserInfo)], ['query']),
+    'listProfiles' : IDL.Func([], [IDL.Vec(ProfileInfo)], ['query']),
     'readConcept' : IDL.Func([IDL.Nat32], [IDL.Opt(ConceptInfo)], ['query']),
     'readInfo' : IDL.Func([], [MarketInfo], ['query']),
-    'readUser' : IDL.Func([IDL.Principal], [IDL.Opt(UserInfo)], ['query']),
+    'readProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(ProfileInfo)],
+        ['query'],
+      ),
     'updateConcept' : IDL.Func([ConceptInfo], [IDL.Nat32], []),
     'updateInfo' : IDL.Func([MarketInfo], [], []),
-    'updateUser' : IDL.Func([UserInfo], [UserInfo], []),
+    'updateProfile' : IDL.Func([ProfileInfo], [ProfileInfo], []),
   });
   return Market;
 };

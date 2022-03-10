@@ -8,57 +8,57 @@ import HashMap "mo:base/HashMap";
 import Types "Types";
 
 actor {
-  type CalendarEvent = Types.CalendarEvent;
+  type CalendarEntry = Types.CalendarEntry;
 
-  let users = HashMap.HashMap<Principal, List.List<CalendarEvent>>(8, Principal.equal, Principal.hash);
-  var nextEventId = Nat32.fromNat(1);
+  let users = HashMap.HashMap<Principal, List.List<CalendarEntry>>(8, Principal.equal, Principal.hash);
+  var nextEntryId = Nat32.fromNat(1);
 
-  public shared({ caller }) func createEvent(event : CalendarEvent) : async Nat32 {
-    Debug.print(debug_show(caller) # " createEvent: " # debug_show(event));
+  public shared({ caller }) func createEntry(entry : CalendarEntry) : async Nat32 {
+    Debug.print(debug_show(caller) # " createEntry: " # debug_show(entry));
 
-    let events = switch (users.get(caller)) {
-      case null List.nil<CalendarEvent>();
-      case (?events) events;
+    let entries = switch (users.get(caller)) {
+      case null List.nil<CalendarEntry>();
+      case (?entries) entries;
     };
-    let id = nextEventId;
-    let newEvents = List.push<CalendarEvent>({ id; title = event.title; description = event.description;
-      date = { begin = event.date.begin; end = event.date.end } }, events);
-    let oldEvents = users.replace(caller, newEvents);
-    nextEventId += 1;
+    let id = nextEntryId;
+    let newEntries = List.push<CalendarEntry>({ id; title = entry.title; description = entry.description;
+      date = { begin = entry.date.begin; end = entry.date.end } }, entries);
+    let oldEntries = users.replace(caller, newEntries);
+    nextEntryId += 1;
     id;
   };
 
-  public query func readEvent(user : Principal, id : Nat32) : async ?CalendarEvent {
-    let events = switch (users.get(user)) {
+  public query func readEntry(user : Principal, id : Nat32) : async ?CalendarEntry {
+    let entries = switch (users.get(user)) {
       case null null;
-      case (?events) List.find<CalendarEvent>(events, func (e) { e.id == id});
+      case (?entries) List.find<CalendarEntry>(entries, func (e) { e.id == id});
     };
   };
 
-  public shared({ caller }) func updateEvent(event : CalendarEvent) : async Nat32 {
-    let events = switch (users.get(caller)) {
+  public shared({ caller }) func updateEntry(entry : CalendarEntry) : async Nat32 {
+    let entries = switch (users.get(caller)) {
       case null null;
-      case (?events) events;
+      case (?entries) entries;
     };
-    let newEvents = List.push<CalendarEvent>(event, List.filter<CalendarEvent>(events, func (e) { e.id != event.id}));
-    let oldEvents = users.replace(caller, newEvents);
-    event.id;
+    let newEntries = List.push<CalendarEntry>(entry, List.filter<CalendarEntry>(entries, func (e) { e.id != entry.id}));
+    let oldEntries = users.replace(caller, newEntries);
+    entry.id;
   };
 
-  public shared({ caller }) func deleteEvent(user : Principal, id : Nat32) : async () {
-    let events = switch (users.get(user)) {
+  public shared({ caller }) func deleteEntry(user : Principal, id : Nat32) : async () {
+    let entries = switch (users.get(user)) {
       case null null;
-      case (?events) events;
+      case (?entries) entries;
     };
-    let newEvents = List.filter<CalendarEvent>(events, func (e) { e.id != id});
-    let oldEvents = users.replace(user, newEvents);
+    let newEntries = List.filter<CalendarEntry>(entries, func (e) { e.id != id});
+    let oldEntries = users.replace(user, newEntries);
     ();
   };
 
-  public query func listEvents(user : Principal) : async [CalendarEvent] {
-    let events = switch (users.get(user)) {
+  public query func listEntries(user : Principal) : async [CalendarEntry] {
+    let entries = switch (users.get(user)) {
       case null [];
-      case (?events) List.toArray(events);
+      case (?entries) List.toArray(entries);
     };
   };
 };
@@ -66,13 +66,13 @@ actor {
 // shared({ caller = initializer }) actor class Calendar(init: { name : Text; description : Text }) = this {
 
 //   type CalendarInfo = Types.CalendarInfo;
-//   type CalendarEvent = Types.CalendarEvent;
+//   type CalendarEntry = Types.CalendarEntry;
 
 //   var name = init.name;
 //   var description = init.description;
 
-//   let users = HashMap.HashMap<Principal, List.List<CalendarEvent>>(8, Principal.equal, Principal.hash);
-//   var nextEventId = Nat32.fromNat(1);
+//   let users = HashMap.HashMap<Principal, List.List<CalendarEntry>>(8, Principal.equal, Principal.hash);
+//   var nextEntryId = Nat32.fromNat(1);
 
 //   public query func readInfo() : async CalendarInfo {
 //     let id = Principal.fromActor(this);
@@ -85,18 +85,18 @@ actor {
 //     ();
 //   };
 
-  // public shared({ caller }) func createEvent(init : CalendarEvent) : async Nat32 {
-  //   let events = switch (users.get(caller)) {
+  // public shared({ caller }) func createEntry(init : CalendarEntry) : async Nat32 {
+  //   let entrys = switch (users.get(caller)) {
   //     case null {
-  //       let user = HashMap.HashMap<Nat32, CalendarEvent>(8, Nat32.equal, func hash(number : Nat32) : Hash.Hash { number; });
+  //       let user = HashMap.HashMap<Nat32, CalendarEntry>(8, Nat32.equal, func hash(number : Nat32) : Hash.Hash { number; });
   //     };
   //     case (?user) ?user;
   //   };
 
-  //   let newEvent = { id = nextEventId; title = init.title; description = init.description };
-  //   events.put(newEvent.id, newEvent);
-  //   nextEventId += 1;
-  //   newEvent.id;
+  //   let newEntry = { id = nextEntryId; title = init.title; description = init.description };
+  //   entrys.put(newEntry.id, newEntry);
+  //   nextEntryId += 1;
+  //   newEntry.id;
   // };
 
   // public func read(id: Nat32) : ?Concept {

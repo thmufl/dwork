@@ -11,8 +11,8 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
-import { useReadUser, useReadMarketInfo, useListConcepts, useListUsers } from '../hooks'
-import { ConceptList, UserList } from '.'
+import { useReadProfile, useReadMarketInfo, useListConcepts, useListProfiles } from '../hooks'
+import { ConceptList, ProfileList } from '.'
 
 const MarketView = () => {
 	const { marketId } = useParams()
@@ -44,27 +44,27 @@ const MarketView = () => {
 	)
 
 	const {
-		data: dataUser,
-		isLoading: isLoadingUser,
-		isError: isErrorUser,
-	} = useReadUser(
+		data: dataProfile,
+		isLoading: isLoadingProfile,
+		isError: isErrorUProfile,
+	} = useReadProfile(
 		getActor(),
 		authClient?.getIdentity().getPrincipal()!,
-		() => console.log('success read user'),
-		() => console.log('error read user')
+		() => console.log('success read profile'),
+		() => console.log('error read profile')
 	)
 	
 	const {
-		data: dataUsers,
-		isLoading: isLoadingUsers,
-		isError: isErrorUsers,
-	} = useListUsers(
+		data: dataProfiles,
+		isLoading: isLoadingProfiles,
+		isError: isErrorProfiles,
+	} = useListProfiles(
 		getActor(),
 		() => console.log('success'),
 		() => console.log('error')
 	)
 
-	if (isLoading || isLoadingUser || isLoadingConcepts) {
+	if (isLoading || isLoadingProfile || isLoadingConcepts) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
@@ -78,12 +78,12 @@ const MarketView = () => {
 			<div>
 				User: {authClient?.getIdentity().getPrincipal().toText()}{' '}
 				<Link
-					to={`/markets/${marketId}/users/${authClient
+					to={`/markets/${marketId}/profiles/${authClient
 						?.getIdentity()
 						.getPrincipal()
 						.toText()}/update`}
 					className="m-1"
-					hidden={dataUser !== undefined}
+					hidden={dataProfile !== undefined}
 				>
 					Add User
 				</Link>
@@ -115,12 +115,12 @@ const MarketView = () => {
 				isError={isErrorConcepts}
 			></ConceptList>
 
-			<h3>Users</h3>
-			<UserList
-				data={dataUsers || []}
-				isLoading={isLoadingUsers}
-				isError={isErrorUsers}
-			></UserList>
+			<h3>Profiles</h3>
+			<ProfileList
+				data={dataProfiles || []}
+				isLoading={isLoadingProfiles}
+				isError={isErrorProfiles}
+			></ProfileList>
 		</Container>
 	)
 }

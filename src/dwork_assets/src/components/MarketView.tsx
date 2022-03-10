@@ -11,8 +11,8 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
-import { useReadUser, useReadMarketInfo, useListConcepts, useListUsers } from '../hooks'
-import { ConceptList, UserList } from './'
+import { useReadProfile, useReadMarketInfo, useListConcepts, useListProfiles } from '../hooks'
+import { ConceptList, ProfileList } from './'
 
 const MarketView = () => {
 	const { marketId } = useParams()
@@ -44,21 +44,21 @@ const MarketView = () => {
 	)
 
 	const {
-		data: dataUser,
-		isLoading: isLoadingUser,
-		isError: isErrorUser,
-	} = useReadUser(
+		data: dataProfile,
+		isLoading: isLoadingProfile,
+		isError: isErrorProfile,
+	} = useReadProfile(
 		getActor(),
 		authClient?.getIdentity().getPrincipal()!,
 		() => console.log('success read user'),
 		() => console.log('error read user')
 	)
 
-	if (isLoading || isLoadingUser || isLoadingConcepts) {
+	if (isLoading || isLoadingProfile || isLoadingConcepts) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isError || isErrorUser || isErrorConcepts) {
+	if (isError || isErrorProfile || isErrorConcepts) {
 		return <p>Error</p>
 	}
 
@@ -67,23 +67,23 @@ const MarketView = () => {
 			<div className="small">
 				User:
 				<Link
-					to={`/markets/${marketId}/users/${authClient
+					to={`/markets/${marketId}/profiles/${authClient
 						?.getIdentity()
 						.getPrincipal()
 						.toText()}`}
 					className="m-1"
 				>
-					{ dataUser?.firstName } { dataUser?.lastName }
+					{ dataProfile?.firstName } { dataProfile?.lastName }
 				</Link>
 				<Link
-					to={`/markets/${marketId}/users/${authClient
+					to={`/markets/${marketId}/profiles/${authClient
 						?.getIdentity()
 						.getPrincipal()
 						.toText()}/update`}
 					className="m-1"
-					hidden={dataUser !== undefined}
+					hidden={dataProfile !== undefined}
 				>
-					Add User
+					Add Profile
 				</Link>
 			</div>
 

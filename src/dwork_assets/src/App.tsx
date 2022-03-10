@@ -15,11 +15,11 @@ import {
 	CreateMarketForm,
 	ConceptView,
 	ConceptForm,
-	UserView,
-	UserForm,
+	ProfileView,
+	ProfileForm,
 	CalendarView,
-	CalendarEventView,
-	CalendarEventForm,
+	CalendarEntryView,
+	CalendarEntryForm,
 } from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
@@ -105,12 +105,12 @@ const App = () => {
 							element={<ConceptForm />}
 						/>
 						<Route
-							path="/markets/:marketId/users/:userId"
-							element={<UserView />}
+							path="/markets/:marketId/profiles/:userId"
+							element={<ProfileView />}
 						/>
 						<Route
-							path="/markets/:marketId/users/:userId/update"
-							element={<UserForm />}
+							path="/markets/:marketId/profiles/:userId/update"
+							element={<ProfileForm />}
 						/>
 
 						<Route
@@ -118,16 +118,16 @@ const App = () => {
 							element={<CalendarView />}
 						/>
 							<Route
-							path="/calendars/:userId/events/:eventId"
-							element={<CalendarEventView />}
+							path="/calendars/:userId/entries/:entryId"
+							element={<CalendarEntryView />}
 						/>
 						<Route
-							path="/calendars/:userId/events/create"
-							element={<CalendarEventForm />}
+							path="/calendars/:userId/entries/create"
+							element={<CalendarEntryForm />}
 						/>
 							<Route
-							path="/calendars/:userId/events/:eventId/update"
-							element={<CalendarEventForm />}
+							path="/calendars/:userId/entries/:entryId/update"
+							element={<CalendarEntryForm />}
 						/>
 					</Routes>
 				</Router>

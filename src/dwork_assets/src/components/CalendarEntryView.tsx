@@ -8,14 +8,14 @@ import { AuthClient } from '@dfinity/auth-client'
 
 import { Principal } from '@dfinity/principal'
 import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, CalendarEvent } from '../../../declarations/calendar/calendar.did'
+import { _SERVICE, CalendarEntry } from '../../../declarations/calendar/calendar.did'
 
 import { createActor, canisterId } from '../../../declarations/calendar'
 
-import { useReadCalendarEvent } from '../hooks'
+import { useReadCalendarEntry } from '../hooks'
 
-const CalendarEventView = () => {
-	const { userId, eventId } = useParams()
+const CalendarEntryView = () => {
+	const { userId, entryId } = useParams()
 	const authClient = useContext(AuthClientContext)
 
 	const getActor = (): ActorSubclass<_SERVICE> =>
@@ -27,10 +27,10 @@ const CalendarEventView = () => {
 
 	// useEffect(() => {}, [])
 
-	const { data, isLoading, isError } = useReadCalendarEvent(
+	const { data, isLoading, isError } = useReadCalendarEntry(
 		getActor(),
 		Principal.fromText(userId!),
-		parseInt(eventId!),
+		parseInt(entryId!),
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -51,7 +51,7 @@ const CalendarEventView = () => {
 			<div>
 				<Row>
 					<Col>Id</Col>
-					<Col xs={9}>{eventId}</Col>
+					<Col xs={9}>{entryId}</Col>
 				</Row>
 				<Row>
 					<Col>Title</Col>
@@ -71,9 +71,9 @@ const CalendarEventView = () => {
 				</Row>
 			</div>
 
-			<Link to={`/calendars/${userId}/events/${eventId}/update`} className="m-1">Edit Event</Link>
+			<Link to={`/calendars/${userId}/events/${entryId}/update`} className="m-1">Edit Event</Link>
 			<Link to={`/calendars/${userId}`} className="m-1">Back to Calendar</Link>
 		</Container>
 	)
 }
-export default CalendarEventView
+export default CalendarEntryView

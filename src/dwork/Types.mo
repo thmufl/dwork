@@ -11,7 +11,7 @@ module {
     description : Text;
   };
 
-  public type UserInfo = {
+  public type ProfileInfo = {
     id : Principal;
     firstName : Text;
     lastName : Text;
@@ -34,7 +34,7 @@ module {
     end : Time;
   };
 
-  public type CalendarEvent = {
+  public type CalendarEntry = {
     id : Nat32;
     // creator : Principal;
     date : TimeInterval;

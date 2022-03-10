@@ -11,8 +11,8 @@ import { _SERVICE } from '../../../declarations/calendar/calendar.did'
 
 import { createActor, canisterId } from '../../../declarations/calendar'
 
-import { useListCalendarEvents } from '../hooks'
-import { CalendarEventList } from './'
+import { useListCalendarEntries } from '../hooks'
+import { CalendarEntryList } from './'
 
 
 const CalendarView = () => {
@@ -28,18 +28,18 @@ const CalendarView = () => {
 
 	useEffect(() => {}, [])
 
-	const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useListCalendarEvents(
+	const { data: dataEntries, isLoading: isLoadingEntries, isError: isErrorEntries } = useListCalendarEntries(
 		getActor(),
 		Principal.fromText(userId!),
 		() => console.log('success'),
 		() => console.log('error')
 	)
 
-	if (isLoadingEvents) {
+	if (isLoadingEntries) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isErrorEvents) {
+	if (isErrorEntries) {
 		return <p>Error</p>
 	}
 
@@ -56,13 +56,13 @@ const CalendarView = () => {
 			</div> */}
 
 			<h3>Events</h3>
-			<CalendarEventList
-				data={dataEvents || []}
-				isLoading={isLoadingEvents}
-				isError={isErrorEvents}
-			></CalendarEventList>
+			<CalendarEntryList
+				data={dataEntries || []}
+				isLoading={isLoadingEntries}
+				isError={isErrorEntries}
+			></CalendarEntryList>
 
-			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/events/create`} className="m-1">Create Event</Link>
+			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/create`} className="m-1">Create Entry</Link>
 		</Container>
 	)
 }

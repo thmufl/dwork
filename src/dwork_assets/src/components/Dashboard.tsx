@@ -12,8 +12,8 @@ import { createActor as createDWorkActor, canisterId as dWorkCanisterId } from '
 
 import { AuthClientContext } from '../App'
 
-import { CalendarEventList } from './'
-import { useListCalendarEvents } from '../hooks'
+import { CalendarEntryList } from './'
+import { useListCalendarEntries } from '../hooks'
 
 import { MarketList } from './'
 import { useCreateMarket, useReadMarkets } from '../hooks/useDWork'
@@ -41,7 +41,7 @@ const Dashboard = () => {
 		data: dataEvents,
 		isLoading: isLoadingEvents,
 		isError: isErrorEvents,
-	} = useListCalendarEvents(
+	} = useListCalendarEntries(
 		getCalendarActor(),
 		authClient?.getIdentity() ? authClient?.getIdentity().getPrincipal() : Principal.anonymous(),
 		() => console.log('success'),
@@ -62,11 +62,11 @@ const Dashboard = () => {
 			</p>
 
 			<h3>Calendar</h3>
-			<CalendarEventList
+			<CalendarEntryList
 				data={dataEvents || []}
 				isLoading={isLoadingEvents}
 				isError={isErrorEvents}
-			></CalendarEventList>
+			></CalendarEntryList>
 			<Link
 				to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}`}
 			>

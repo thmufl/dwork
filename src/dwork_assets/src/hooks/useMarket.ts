@@ -4,7 +4,7 @@ import { Principal } from '@dfinity/principal'
 import {
 	_SERVICE,
 	MarketInfo,
-	UserInfo,
+	ProfileInfo,
 	ConceptInfo,
 } from '../../../declarations/market/market.did'
 
@@ -85,63 +85,63 @@ export const useListConcepts = (
 	})
 }
 
-// User
+// Profile
 
-export const useAddUser = (
+export const useAddProfile = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: void) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (user: UserInfo) => {
-		return actor.addUser(user)
+	const action = (profile: ProfileInfo) => {
+		return actor.addProfile(profile)
 	}
 	return useMutation(action, { onSuccess, onError })
 }
 
-export const useReadUser = (
+export const useReadProfile = (
 	actor: ActorSubclass<_SERVICE>,
-	userId: Principal,
-	onSuccess: ((data: UserInfo) => void) | undefined,
+	profileId: Principal,
+	onSuccess: ((data: ProfileInfo) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = () => actor.readUser(userId)
-	return useQuery<UserInfo[], Error, UserInfo | undefined>(
-		['user-info', Actor.canisterIdOf(actor).toText(), userId],
+	const action = () => actor.readProfile(profileId)
+	return useQuery<ProfileInfo[], Error, ProfileInfo | undefined>(
+		['profile-info', Actor.canisterIdOf(actor).toText(), profileId],
 		action,
 		{
 			onError,
-			select: (data: UserInfo[]) => (data && data[0] ? data[0] : undefined)
+			select: (data: ProfileInfo[]) => (data && data[0] ? data[0] : undefined)
 		}
 	)
 }
 
-export const useUpdateUser = (
+export const useUpdateProfile = (
 	actor: ActorSubclass<_SERVICE>,
-	onSuccess: ((data: UserInfo) => void) | undefined,
+	onSuccess: ((data: ProfileInfo) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (user: UserInfo) => {
-		return actor.updateUser(user)
+	const action = (profile: ProfileInfo) => {
+		return actor.updateProfile(profile)
 	}
 	return useMutation(action, { onSuccess, onError })
 }
 
-export const useDeleteUser = (
+export const useDeleteProfile = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: void) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (id: Principal) => actor.deleteUser(id)
+	const action = (id: Principal) => actor.deleteProfile(id)
 	return useMutation(action, { onSuccess, onError })
 }
 
-export const useListUsers = (
+export const useListProfiles = (
 	actor: ActorSubclass<_SERVICE>,
-	onSuccess: ((data: UserInfo[]) => void) | undefined,
+	onSuccess: ((data: ProfileInfo[]) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = () => actor.listUsers()
-	return useQuery<UserInfo[], Error>('user-infos', action, {
+	const action = () => actor.listProfiles()
+	return useQuery<ProfileInfo[], Error>(['profile-infos', Actor.canisterIdOf(actor).toText()] , action, {
 		onSuccess,
 		onError,
 	})

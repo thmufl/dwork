@@ -11,12 +11,11 @@ export { default as ConceptList } from './ConceptList'
 export { default as ConceptView } from './ConceptView'
 export { default as ConceptForm } from './ConceptForm'
 
-export { default as UserList } from './UserList'
-export { default as UserView } from './UserView'
-export { default as UserForm } from './UserForm'
+export { default as ProfileList } from './ProfileList'
+export { default as ProfileView } from './ProfileView'
+export { default as ProfileForm } from './ProfileForm'
 
 export { default as CalendarView } from './CalendarView'
-export { default as CalendarEventList } from './CalendarEventList'
-export { default as CalendarEventView } from './CalendarEventView'
-export { default as CalendarEventForm } from './CalendarEventForm'
-
+export { default as CalendarEntryList } from './CalendarEntryList'
+export { default as CalendarEntryView } from './CalendarEntryView'
+export { default as CalendarEntryForm } from './CalendarEntryForm'

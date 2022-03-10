@@ -5,19 +5,19 @@ import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 
 import Types "Types";
-import Users "Users";
+import Profiles "Profiles";
 import Concepts "Concepts";
 
 shared({ caller = initializer }) actor class Market(init: { name : Text; description : Text }) = this {
 
   type MarketInfo = Types.MarketInfo;
-  type UserInfo = Types.UserInfo;
+  type ProfileInfo = Types.ProfileInfo;
   type ConceptInfo = Types.ConceptInfo;
 
   var name = init.name;
   var description = init.description;
 
-  let userRegistry = Users.UserRegistry();
+  let profileRegistry = Profiles.ProfileRegistry();
   let conceptScheme = Concepts.ConceptScheme();
 
   public query func readInfo() : async MarketInfo {
@@ -56,29 +56,29 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     conceptScheme.list();
   };
 
-  // User
+  // Profile
 
-  public shared({ caller }) func addUser(user : UserInfo) : async () {
-    Debug.print(debug_show(caller) # ": add user");
-    userRegistry.add(user);
+  public shared({ caller }) func addProfile(profile : ProfileInfo) : async () {
+    Debug.print(debug_show(caller) # ": add profile");
+    profileRegistry.add(profile);
   };
 
-  public query func readUser(id: Principal) : async ?UserInfo {
-    let user = switch (userRegistry.read(id)) {
+  public query func readProfile(id: Principal) : async ?ProfileInfo {
+    let profile = switch (profileRegistry.read(id)) {
       case null null;
-      case (?user) ?user.info();
+      case (?profile) ?profile.info();
     };
   };
 
-  public shared({ caller }) func updateUser(user : UserInfo) : async UserInfo {
-    userRegistry.update(user);
+  public shared({ caller }) func updateProfile(profile : ProfileInfo) : async ProfileInfo {
+    profileRegistry.update(profile);
   };
 
-  public shared({ caller }) func deleteUser(id: Principal) : async () {
-    userRegistry.delete(id);
+  public shared({ caller }) func deleteProfile(id: Principal) : async () {
+    profileRegistry.delete(id);
   };
 
-  public query func listUsers() : async [UserInfo] {
-    userRegistry.list();
+  public query func listProfiles() : async [ProfileInfo] {
+    profileRegistry.list();
   };
 };

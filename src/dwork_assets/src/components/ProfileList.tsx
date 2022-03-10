@@ -7,14 +7,14 @@ import { Principal } from '@dfinity/principal'
 import {
 	_SERVICE,
 	MarketInfo,
-	UserInfo,
+	ProfileInfo,
 } from '../../../declarations/market/market.did'
 
 import { AuthClientContext } from '../App'
-import { useAddUser } from '../hooks/useMarket'
+import { useAddProfile} from '../hooks/useMarket'
 
-const UserList = (props: {
-	data: UserInfo[]
+const ProfileList = (props: {
+	data: ProfileInfo[]
 	isLoading: any
 	isError: any
 }) => {
@@ -33,31 +33,31 @@ const UserList = (props: {
 	return (
 		<>
 			<Link
-				to={`/markets/${marketId}/users/${Principal.anonymous().toText()}/update`}
+				to={`/markets/${marketId}/profiles/${Principal.anonymous().toText()}/update`}
 				className="m-1"
 			>
-				Add User
+				Add Profile
 			</Link>
 			<Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
-					placeholder="Filter users by Name."
+					placeholder="Filter profiles by name."
 				/>
 			</Form>
 
 			<ListGroup>
 				{data
 					?.filter(
-						(user) =>
-							user.firstName
+						(profile) =>
+						profile.firstName
 								.toLowerCase()
 								.includes(watch('name')?.toLowerCase()) ||
 							watch('name') === undefined
 					)
-					.map((user, index) => (
+					.map((profile, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/markets/${marketId}/users/${user.id}`}>
-								{user.firstName} {user.lastName}
+							<Link to={`/markets/${marketId}/profiles/${profile.id}`}>
+								{profile.firstName} {profile.lastName}
 							</Link>
 						</ListGroup.Item>
 					))}
@@ -65,4 +65,4 @@ const UserList = (props: {
 		</>
 	)
 }
-export default UserList
+export default ProfileList
