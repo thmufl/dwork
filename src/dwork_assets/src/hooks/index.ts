@@ -16,6 +16,11 @@ export { useReadProfile } from './useMarket'
 export { useUpdateProfile } from './useMarket'
 export { useListProfiles } from './useMarket'
 
+export { useReadContract } from './useMarket'
+export { useUpdateContract } from './useMarket'
+export { useDeleteContract } from './useMarket'
+export { useListContracts } from './useMarket'
+
 export { useUpdateCalendarEntry } from './useCalendar'
 export { useReadCalendarEntry } from './useCalendar'
 export { useDeleteCalendarEntry } from './useCalendar'

@@ -7,18 +7,21 @@ import HashMap "mo:base/HashMap";
 import Types "Types";
 import Profiles "Profiles";
 import Concepts "Concepts";
+import Contracts "Contracts";
 
 shared({ caller = initializer }) actor class Market(init: { name : Text; description : Text }) = this {
 
   type MarketInfo = Types.MarketInfo;
   type ProfileInfo = Types.ProfileInfo;
   type ConceptInfo = Types.ConceptInfo;
+  type ContractInfo = Types.ContractInfo;
 
   var name = init.name;
   var description = init.description;
 
   let profileRegistry = Profiles.ProfileRegistry();
   let conceptScheme = Concepts.ConceptScheme();
+  let contractRegistry = Contracts.ContractRegistry();
 
   public query func readInfo() : async MarketInfo {
     let id = Principal.fromActor(this);
@@ -81,4 +84,30 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
   public query func listProfiles() : async [ProfileInfo] {
     profileRegistry.list();
   };
+
+  // Contract
+
+  public shared({ caller }) func createContract(contract : ContractInfo) : async Nat32 {
+    contractRegistry.create(contract);
+  };
+
+  public query func readContract(id: Nat32) : async ?ContractInfo {
+    let contract = switch (contractRegistry.read(id)) {
+      case null null;
+      case (?contract) ?contract.info();
+    };
+  };
+
+  public shared({ caller }) func updateContract(contract : ContractInfo) : async Nat32 {
+    contractRegistry.update(contract);
+  };
+
+  public shared({ caller }) func deleteContract(id: Nat32) : async () {
+    contractRegistry.delete(id);
+  };
+
+  public query func listContracts() : async [ContractInfo] {
+    contractRegistry.list();
+  };
+
 };

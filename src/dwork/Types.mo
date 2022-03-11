@@ -34,6 +34,18 @@ module {
     end : Time;
   };
 
+  public type ContractInfo = {
+    id : Nat32;
+    // owner : Principal;
+    title : Text;
+    description : Text;
+    date : TimeInterval;
+    // isRoot : Bool;
+    // broader : [?Concept];
+    // narrower : [?Concept];
+    // modified : Time;
+  };
+
   public type CalendarEntry = {
     id : Nat32;
     // creator : Principal;

@@ -8,65 +8,59 @@ import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
 
 import {
 	_SERVICE,
-	CalendarEntry,
-} from '../../../declarations/calendar/calendar.did'
-import { createActor, canisterId } from '../../../declarations/calendar'
+	MarketInfo,
+	ContractInfo,
+} from '../../../declarations/market/market.did'
+import { createActor } from '../../../declarations/market'
 
 import { AuthClientContext } from '../App'
-import {
-	useReadCalendarEntry,
-	useUpdateCalendarEntry,
-	useDeleteCalendarEntry,
-} from '../hooks'
-import { CalendarEntryAdapter } from '../types'
+import { ContractAdapter } from '../types'
+import { useReadContract, useUpdateContract, useDeleteContract } from '../hooks'
 
-const CalendarEntryForm = () => {
-	const { userId, entryId } = useParams()
+const ContractForm = () => {
+	const { marketId, contractId } = useParams()
 	const authClient = useContext(AuthClientContext)
 	const navigate = useNavigate()
 	const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
 
-	const { register, watch, handleSubmit, reset } =
-		useForm<CalendarEntryAdapter>()
+	const { register, watch, handleSubmit, reset } = useForm<ContractAdapter>()
 
 	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(canisterId!, {
+		createActor(marketId!, {
 			agentOptions: {
 				identity: authClient?.getIdentity(),
 			},
 		})
 
-	const { data, isLoading, isError } = useReadCalendarEntry(
+	const { data, isLoading, isError } = useReadContract(
 		getActor(),
-		Principal.fromText(userId!),
-		entryId ? parseInt(entryId) : 0,
-		() => console.log('success read calendar entry'),
-		() => console.log('error read calendar entry')
+		contractId ? parseInt(contractId) : 0,
+		() => console.log('success read contract'),
+		() => console.log('error read contract')
 	)
 
 	const {
-		mutateAsync: updateEntry,
+		mutateAsync: updateContract,
 		isLoading: isUpdating,
 		isSuccess: isSuccessUpdate,
 		isError: isErrorUpdate,
 		error: errorUpdate,
-	} = useUpdateCalendarEntry(
+	} = useUpdateContract(
 		getActor(),
-		() => console.log('success update calendar entry'),
-		() => console.log('error update calendar entry')
+		() => console.log('success update contract'),
+		() => console.log('error update contract')
 	)
 
 	const {
-		mutateAsync: deleteEntry,
+		mutateAsync: deleteContract,
 		isLoading: isDeleting,
 		isSuccess: isSuccessDelete,
 		isError: isErrorDelete,
 		error: errorDelete,
-	} = useDeleteCalendarEntry(
+	} = useDeleteContract(
 		getActor(),
-		Principal.fromText(userId!),
-		() => console.log('success delete concept'),
-		() => console.log('error delete concept')
+		() => console.log('success delete contract'),
+		() => console.log('error delete contract')
 	)
 
 	useEffect(() => {
@@ -81,16 +75,16 @@ const CalendarEntryForm = () => {
 		})
 	}, [data])
 
-	const onSubmit = async (data: CalendarEntryAdapter) => {
-		const entryId = await updateEntry({ ...data,
+	const onSubmit = async (data: ContractAdapter) => {
+		const contractId = await updateContract({
+			...data,
 			id: Number(data.id || 0),
 			date: {
 				begin: BigInt(Date.parse(data.date.begin)),
 				end: BigInt(Date.parse(data.date.end))
 			}
-		
 		})
-		navigate(`/calendars/${userId}/entries/${entryId}`)
+		navigate(`/markets/${marketId}/contracts/${contractId}`)
 	}
 
 	if (isLoading || isUpdating || isDeleting) {
@@ -103,10 +97,10 @@ const CalendarEntryForm = () => {
 
 	return (
 		<Container>
-			<h2>Edit Calendar Entry</h2>
+			<h2>Edit Contract</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
-				<Form.Control {...register('title')} required placeholder="Title" />
+				<Form.Control {...register('title')} placeholder="Title" />
 				<Form.Control
 					{...register('description')}
 					as="textarea"
@@ -133,8 +127,8 @@ const CalendarEntryForm = () => {
 					className="m-1"
 					variant="danger"
 					onClick={async () => {
-						await deleteEntry(Number(entryId))
-						navigate(`/calendars/${userId}/`)
+						await deleteContract(Number(contractId))
+						navigate(`/markets/${marketId}/`)
 					}}
 					disabled={isLoading || isUpdating || isDeleting}
 				>
@@ -144,8 +138,8 @@ const CalendarEntryForm = () => {
 				<Button
 					className="m-1"
 					variant="primary"
-					onClick={() => navigate(`/calendars/${userId}/entries/${entryId}`)}
-					disabled={isLoading || isUpdating}
+					onClick={() => navigate(`/markets/${marketId}/contracts/${contractId}`)}
+					disabled={isLoading || isUpdating || isDeleting}
 				>
 					Cancel
 				</Button>
@@ -153,4 +147,4 @@ const CalendarEntryForm = () => {
 		</Container>
 	)
 }
-export default CalendarEntryForm
+export default ContractForm

@@ -1,3 +1,9 @@
+type TimeInterval = 
+ record {
+   begin: Time;
+   end: Time;
+ };
+type Time = int;
 type ProfileInfo = 
  record {
    description: text;
@@ -15,16 +21,28 @@ type Market =
  service {
    addProfile: (ProfileInfo) -> ();
    createConcept: (ConceptInfo) -> (nat32);
+   createContract: (ContractInfo) -> (nat32);
    deleteConcept: (nat32) -> ();
+   deleteContract: (nat32) -> ();
    deleteProfile: (principal) -> ();
    listConcepts: () -> (vec ConceptInfo) query;
+   listContracts: () -> (vec ContractInfo) query;
    listProfiles: () -> (vec ProfileInfo) query;
    readConcept: (nat32) -> (opt ConceptInfo) query;
+   readContract: (nat32) -> (opt ContractInfo) query;
    readInfo: () -> (MarketInfo) query;
    readProfile: (principal) -> (opt ProfileInfo) query;
    updateConcept: (ConceptInfo) -> (nat32);
+   updateContract: (ContractInfo) -> (nat32);
    updateInfo: (MarketInfo) -> ();
    updateProfile: (ProfileInfo) -> (ProfileInfo);
+ };
+type ContractInfo = 
+ record {
+   date: TimeInterval;
+   description: text;
+   id: nat32;
+   title: text;
  };
 type ConceptInfo = 
  record {

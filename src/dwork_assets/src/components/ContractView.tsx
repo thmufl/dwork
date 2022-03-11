@@ -5,21 +5,19 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { AuthClientContext } from '../App'
 
 import { AuthClient } from '@dfinity/auth-client'
-
-import { Principal } from '@dfinity/principal'
 import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, CalendarEntry } from '../../../declarations/calendar/calendar.did'
+import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
-import { createActor, canisterId } from '../../../declarations/calendar'
+import { createActor } from '../../../declarations/market'
 
-import { useReadCalendarEntry } from '../hooks'
+import { useReadContract } from '../hooks'
 
-const CalendarEntryView = () => {
-	const { userId, entryId } = useParams()
+const ContractView = () => {
+	const { marketId, contractId } = useParams()
 	const authClient = useContext(AuthClientContext)
 
 	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(canisterId!, {
+		createActor(marketId!, {
 			agentOptions: {
 				identity: authClient?.getIdentity(),
 			},
@@ -27,10 +25,9 @@ const CalendarEntryView = () => {
 
 	// useEffect(() => {}, [])
 
-	const { data, isLoading, isError } = useReadCalendarEntry(
+	const { data, isLoading, isError } = useReadContract(
 		getActor(),
-		Principal.fromText(userId!),
-		parseInt(entryId!),
+		parseInt(contractId!),
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -45,13 +42,13 @@ const CalendarEntryView = () => {
 
 	return (
 		<Container>
-			<h2>Calendar Entry</h2>
+			<h2>Contract</h2>
 			<div>User: {authClient?.getIdentity().getPrincipal().toText()}</div>
 
 			<div>
 				<Row>
 					<Col>Id</Col>
-					<Col xs={9}>{entryId}</Col>
+					<Col xs={9}>{contractId}</Col>
 				</Row>
 				<Row>
 					<Col>Title</Col>
@@ -71,9 +68,9 @@ const CalendarEntryView = () => {
 				</Row>
 			</div>
 
-			<Link to={`/calendars/${userId}/entries/${entryId}/update`} className="m-1">Edit Entry</Link>
-			<Link to={`/calendars/${userId}`} className="m-1">Back to Calendar</Link>
+			<Link to={`/markets/${marketId}/contracts/${contractId}/update`} className="m-1">Edit Contract</Link>
+			<Link to={`/markets/${marketId}`} className="m-1">Back to Market</Link>
 		</Container>
 	)
 }
-export default CalendarEntryView
+export default ContractView

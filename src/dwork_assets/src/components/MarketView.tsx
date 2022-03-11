@@ -11,8 +11,8 @@ import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
 
 import { createActor } from '../../../declarations/market'
 
-import { useReadProfile, useReadMarketInfo, useListConcepts, useListProfiles } from '../hooks'
-import { ConceptList, ProfileList } from './'
+import { useReadProfile, useReadMarketInfo, useListConcepts, useListContracts, useListProfiles } from '../hooks'
+import { ConceptList, ContractList } from './'
 
 const MarketView = () => {
 	const { marketId } = useParams()
@@ -44,6 +44,16 @@ const MarketView = () => {
 	)
 
 	const {
+		data: dataContracts,
+		isLoading: isLoadingContracts,
+		isError: isErrorContracts,
+	} = useListContracts(
+		getActor(),
+		() => console.log('success'),
+		() => console.log('error')
+	)
+
+	const {
 		data: dataProfile,
 		isLoading: isLoadingProfile,
 		isError: isErrorProfile,
@@ -54,11 +64,11 @@ const MarketView = () => {
 		() => console.log('error read user')
 	)
 
-	if (isLoading || isLoadingProfile || isLoadingConcepts) {
+	if (isLoading || isLoadingProfile || isLoadingConcepts || isLoadingContracts) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isError || isErrorProfile || isErrorConcepts) {
+	if (isError || isErrorProfile || isErrorConcepts || isErrorConcepts) {
 		return <p>Error</p>
 	}
 
@@ -98,6 +108,13 @@ const MarketView = () => {
 					<Col xs={9}>{data?.description}</Col>
 				</Row>
 			</div>
+
+			<h3>Contracts</h3>
+			<ContractList
+				data={dataContracts || []}
+				isLoading={isLoadingContracts}
+				isError={isErrorContracts}
+			></ContractList>
 
 			<h3>Concepts</h3>
 			<ConceptList

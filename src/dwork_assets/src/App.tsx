@@ -17,6 +17,8 @@ import {
 	ConceptForm,
 	ProfileView,
 	ProfileForm,
+	ContractView,
+	ContractForm,
 	CalendarView,
 	CalendarEntryView,
 	CalendarEntryForm,
@@ -92,6 +94,7 @@ const App = () => {
 						<Route path="/markets/create" element={<CreateMarketForm />} />
 						<Route path="/markets/:marketId/update" element={<MarketForm />} />
 						<Route path="/markets/:marketId/delete" element={<Dashboard />} />
+
 						<Route
 							path="/markets/:marketId/concepts/create"
 							element={<ConceptForm />}
@@ -104,6 +107,7 @@ const App = () => {
 							path="/markets/:marketId/concepts/:conceptId/update"
 							element={<ConceptForm />}
 						/>
+
 						<Route
 							path="/markets/:marketId/profiles/:userId"
 							element={<ProfileView />}
@@ -111,6 +115,19 @@ const App = () => {
 						<Route
 							path="/markets/:marketId/profiles/:userId/update"
 							element={<ProfileForm />}
+						/>
+
+						<Route
+							path="/markets/:marketId/contracts/create"
+							element={<ContractForm />}
+						/>
+						<Route
+							path="/markets/:marketId/contracts/:contractId"
+							element={<ContractView />}
+						/>
+						<Route
+							path="/markets/:marketId/contracts/:contractId/update"
+							element={<ContractForm />}
 						/>
 
 						<Route

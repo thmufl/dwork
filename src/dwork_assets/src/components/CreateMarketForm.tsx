@@ -69,6 +69,14 @@ const CreateMarketForm = () => {
 				>
 					Create
 				</Button>
+				<Button
+					className="m-1"
+					variant="primary"
+					onClick={() => navigate(`/`)}
+					disabled={isCreating}
+				>
+					Cancel
+				</Button>
 			</Form>
 		</Container>
 	)

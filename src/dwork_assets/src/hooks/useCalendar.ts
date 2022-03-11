@@ -6,30 +6,22 @@ import {
 	CalendarEntry,
 } from '../../../declarations/calendar/calendar.did'
 
-import { CalendarEntryAdapter } from '../types'
-
 export const useUpdateCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: number) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (entry: CalendarEntryAdapter) => {
-		let adaptedEntry: CalendarEntry = {
+	const action = (entry: CalendarEntry) => {
+		let adapted: CalendarEntry = {
 			...entry,
 			date: {
-				begin:
-					typeof entry.date.begin === 'string'
-						? BigInt(Date.parse(entry.date.begin))
-						: BigInt(entry.date.begin),
-				end:
-					typeof entry.date.end === 'string'
-						? BigInt(Date.parse(entry.date.end))
-						: BigInt(entry.date.end),
+				begin: BigInt(entry.date.begin),
+				end: BigInt(entry.date.end)
 			},
 		}
-		return adaptedEntry.id === 0
-			? actor.createEntry(adaptedEntry)
-			: actor.updateEntry(adaptedEntry)
+		return adapted.id === 0
+			? actor.createEntry(adapted)
+			: actor.updateEntry(adapted)
 	}
 	return useMutation(action, { onSuccess, onError })
 }
@@ -38,11 +30,11 @@ export const useReadCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	user: Principal,
 	id: number,
-	onSuccess: ((data: CalendarEntryAdapter) => void) | undefined,
+	onSuccess: ((data: CalendarEntry) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
 	const action = () => actor.readEntry(user, id)
-	return useQuery<CalendarEntry[], Error, CalendarEntryAdapter | undefined>(
+	return useQuery<CalendarEntry[], Error, CalendarEntry | undefined>(
 		['calendar-entry', user.toText(), id],
 		action,
 		{
@@ -52,12 +44,8 @@ export const useReadCalendarEntry = (
 					? {
 							...data[0],
 							date: {
-								begin: new Date(Number(data[0].date.begin))
-									.toISOString()
-									.substring(0, 16),
-								end: new Date(Number(data[0].date.end))
-									.toISOString()
-									.substring(0, 16),
+								begin: data[0].date.begin,
+								end: data[0].date.end,
 							},
 					  }
 					: undefined,
@@ -83,10 +71,24 @@ export const useListCalendarEntries = (
 ) => {
 	const action = () => actor.listEntries(user)
 
-	return useQuery<CalendarEntry[], Error>(['calendar-entries', user.toText()], action, {
-		onSuccess,
-		onError,
-	})
+	return useQuery<CalendarEntry[], Error, CalendarEntry[]>(
+		['calendar-entries', user.toText()],
+		action,
+		{
+			onError,
+			select: (data: CalendarEntry[]) =>
+				data.map((entry) => {
+					let adapted: CalendarEntry = {
+						...entry,
+						date: {
+							begin: BigInt(entry.date.begin),
+							end: BigInt(entry.date.end),
+						},
+					}
+					return adapted
+				}),
+		}
+	)
 }
 
 // export const useUpdateCalendarInfo = (

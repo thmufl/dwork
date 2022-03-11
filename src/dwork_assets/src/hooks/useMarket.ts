@@ -6,6 +6,7 @@ import {
 	MarketInfo,
 	ProfileInfo,
 	ConceptInfo,
+	ContractInfo,
 } from '../../../declarations/market/market.did'
 
 export const useReadMarketInfo = (
@@ -58,7 +59,7 @@ export const useReadConcept = (
 		action,
 		{
 			onError,
-			select: (data: ConceptInfo[]) => (data && data[0] ? data[0] : undefined)
+			select: (data: ConceptInfo[]) => (data && data[0] ? data[0] : undefined),
 		}
 	)
 }
@@ -110,7 +111,7 @@ export const useReadProfile = (
 		action,
 		{
 			onError,
-			select: (data: ProfileInfo[]) => (data && data[0] ? data[0] : undefined)
+			select: (data: ProfileInfo[]) => (data && data[0] ? data[0] : undefined),
 		}
 	)
 }
@@ -141,10 +142,98 @@ export const useListProfiles = (
 	onError: ((err: Error) => void) | undefined
 ) => {
 	const action = () => actor.listProfiles()
-	return useQuery<ProfileInfo[], Error>(['profile-infos', Actor.canisterIdOf(actor).toText()] , action, {
-		onSuccess,
-		onError,
-	})
+	return useQuery<ProfileInfo[], Error>(
+		['profile-infos', Actor.canisterIdOf(actor).toText()],
+		action,
+		{
+			onSuccess,
+			onError,
+		}
+	)
+}
+
+// Contract
+
+export const useUpdateContract = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: number) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = (contract: ContractInfo) => {
+		let adapted: ContractInfo = {
+			...contract,
+			date: {
+				begin: BigInt(contract.date.begin),
+				end: BigInt(contract.date.end),
+			},
+		}
+		return adapted.id === 0
+			? actor.createContract(adapted)
+			: actor.updateContract(adapted)
+	}
+	return useMutation(action, { onSuccess, onError })
+}
+
+export const useReadContract = (
+	actor: ActorSubclass<_SERVICE>,
+	contractId: number,
+	onSuccess: ((data: ContractInfo) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.readContract(contractId)
+	return useQuery<ContractInfo[], Error, ContractInfo | undefined>(
+		['contract-info', Actor.canisterIdOf(actor).toText(), contractId],
+		action,
+		{
+			onError,
+			select: (data: ContractInfo[]) =>
+				data && data[0]
+					? {
+							...data[0],
+							date: {
+								begin: data[0].date.begin,
+								end: data[0].date.end,
+							},
+					  }
+					: undefined,
+		}
+	)
+}
+
+export const useDeleteContract = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: void) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = (id: number) => actor.deleteContract(id)
+	return useMutation(action, { onSuccess, onError })
+}
+
+export const useListContracts = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: ContractInfo[]) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.listContracts()
+
+	return useQuery<ContractInfo[], Error, ContractInfo[]>(
+		['contract-infos', Actor.canisterIdOf(actor).toText()],
+		action,
+		{
+			onError,
+			select: (data: ContractInfo[]) =>
+				data.map((contract) => {
+					let adapted: ContractInfo = {
+						...contract,
+						date: {
+							begin: BigInt(contract.date.begin),
+							end: BigInt(contract.date.end),
+						},
+					}
+					return adapted
+				}),
+		}
+	)
 }
 
 // export const useReadUser = (

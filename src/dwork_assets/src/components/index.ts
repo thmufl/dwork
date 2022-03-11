@@ -15,6 +15,10 @@ export { default as ProfileList } from './ProfileList'
 export { default as ProfileView } from './ProfileView'
 export { default as ProfileForm } from './ProfileForm'
 
+export { default as ContractList } from './ContractList'
+export { default as ContractView } from './ContractView'
+export { default as ContractForm } from './ContractForm'
+
 export { default as CalendarView } from './CalendarView'
 export { default as CalendarEntryList } from './CalendarEntryList'
 export { default as CalendarEntryView } from './CalendarEntryView'
