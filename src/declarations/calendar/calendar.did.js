@@ -4,7 +4,9 @@ export const idlFactory = ({ IDL }) => {
   const CalendarEntry = IDL.Record({
     'id' : IDL.Nat32,
     'title' : IDL.Text,
+    'creator' : IDL.Principal,
     'date' : TimeInterval,
+    'user' : IDL.Principal,
     'description' : IDL.Text,
   });
   return IDL.Service({

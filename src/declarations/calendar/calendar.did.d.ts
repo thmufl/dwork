@@ -2,7 +2,9 @@ import type { Principal } from '@dfinity/principal';
 export interface CalendarEntry {
   'id' : number,
   'title' : string,
+  'creator' : Principal,
   'date' : TimeInterval,
+  'user' : Principal,
   'description' : string,
 }
 export type Time = bigint;

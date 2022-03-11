@@ -14,6 +14,8 @@ module Contracts = {
 
   public class Contract(init : ContractInfo) {
     let { id } = init;
+    var contractor = init.contractor;
+    var contractee = init.contractee;
     var title = init.title;
     var description = init.description;
     var date = init.date;
@@ -23,7 +25,7 @@ module Contracts = {
     };
 
     public func info() : ContractInfo {
-      { id; title; description; date };
+      { id; contractor; contractee; title; description; date };
     };
   };
 
@@ -32,7 +34,7 @@ module Contracts = {
     var nextId = Nat32.fromNat(1);
 
     public func create(init : ContractInfo) : Nat32 {
-      let newContract = Contracts.Contract({ id = nextId; title = init.title; description = init.description; date = init.date });
+      let newContract = Contracts.Contract({ id = nextId; contractor = init.contractor; contractee = init.contractee; title = init.title; description = init.description; date = init.date });
       contracts.put(newContract.getId(), newContract);
       nextId += 1;
       newContract.getId();

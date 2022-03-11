@@ -11,14 +11,7 @@ module {
     description : Text;
   };
 
-  public type ProfileInfo = {
-    id : Principal;
-    firstName : Text;
-    lastName : Text;
-    description : Text;
-  };
-
-  public type ConceptInfo = {
+public type ConceptInfo = {
     id : Nat32;
     // owner : Principal;
     preferredLabel : Text;
@@ -29,6 +22,14 @@ module {
     // modified : Time;
   };
 
+  public type ProfileInfo = {
+    id : Principal;
+    firstName : Text;
+    lastName : Text;
+    description : Text;
+    concepts : [ConceptInfo];
+  };
+
   public type TimeInterval = {
     begin : Time;
     end : Time;
@@ -36,7 +37,8 @@ module {
 
   public type ContractInfo = {
     id : Nat32;
-    // owner : Principal;
+    contractor : Principal;
+    contractee : Principal;
     title : Text;
     description : Text;
     date : TimeInterval;
@@ -48,7 +50,8 @@ module {
 
   public type CalendarEntry = {
     id : Nat32;
-    // creator : Principal;
+    creator : Principal;
+    user : Principal;
     date : TimeInterval;
     //place : Text;
     title : Text;

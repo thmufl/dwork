@@ -70,25 +70,32 @@ const CalendarEntryForm = () => {
 	)
 
 	useEffect(() => {
-		reset({
-			...data,
-			date: {
-				begin: new Date(Number(data?.date.begin) - timeZoneOffset)
-					.toISOString()
-					.substring(0, 16),
-				end: new Date(Number(data?.date.end) - timeZoneOffset).toISOString().substring(0, 16),
-			},
-		})
+		if (data)
+			reset({
+				...data,
+				creator: data.creator.toText(),
+				user: data.user.toText(),
+				date: {
+					begin: new Date(Number(data.date.begin) - timeZoneOffset)
+						.toISOString()
+						.substring(0, 16),
+					end: new Date(Number(data.date.end) - timeZoneOffset)
+						.toISOString()
+						.substring(0, 16),
+				},
+			})
 	}, [data])
 
 	const onSubmit = async (data: CalendarEntryAdapter) => {
-		const entryId = await updateEntry({ ...data,
+		const entryId = await updateEntry({
+			...data,
 			id: Number(data.id || 0),
+			creator: Principal.fromText(userId!),
+			user: Principal.fromText(userId!),
 			date: {
 				begin: BigInt(Date.parse(data.date.begin)),
-				end: BigInt(Date.parse(data.date.end))
-			}
-		
+				end: BigInt(Date.parse(data.date.end)),
+			},
 		})
 		navigate(`/calendars/${userId}/entries/${entryId}`)
 	}
@@ -106,7 +113,8 @@ const CalendarEntryForm = () => {
 			<h2>Edit Calendar Entry</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
-				<Form.Control {...register('title')} required placeholder="Title" />
+				<Form.Control {...register('creator')} required placeholder="Creator" />
+				<Form.Control {...register('user')} required placeholder="User" />
 				<Form.Control
 					{...register('description')}
 					as="textarea"
@@ -144,7 +152,7 @@ const CalendarEntryForm = () => {
 				<Button
 					className="m-1"
 					variant="primary"
-					onClick={() => navigate(`/calendars/${userId}/entries/${entryId}`)}
+					onClick={() => entryId ? navigate(`/calendars/${userId}/entries/${entryId}`) : navigate(`/calendars/${userId}`) }
 					disabled={isLoading || isUpdating}
 				>
 					Cancel

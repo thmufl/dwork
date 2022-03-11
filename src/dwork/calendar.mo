@@ -7,23 +7,23 @@ import HashMap "mo:base/HashMap";
 
 import Types "Types";
 
-actor {
+actor Calendar {
   type CalendarEntry = Types.CalendarEntry;
 
   let users = HashMap.HashMap<Principal, List.List<CalendarEntry>>(8, Principal.equal, Principal.hash);
   var nextEntryId = Nat32.fromNat(1);
 
   public shared({ caller }) func createEntry(entry : CalendarEntry) : async Nat32 {
-    Debug.print(debug_show(caller) # " createEntry: " # debug_show(entry));
+    Debug.print(debug_show(caller) # " Calendar.createEntry: " # debug_show(entry));
 
-    let entries = switch (users.get(caller)) {
+    let entries = switch (users.get(entry.user)) {
       case null List.nil<CalendarEntry>();
       case (?entries) entries;
     };
     let id = nextEntryId;
-    let newEntries = List.push<CalendarEntry>({ id; title = entry.title; description = entry.description;
+    let newEntries = List.push<CalendarEntry>({ id; creator = caller; user = entry.user; title = entry.title; description = entry.description;
       date = { begin = entry.date.begin; end = entry.date.end } }, entries);
-    let oldEntries = users.replace(caller, newEntries);
+    let oldEntries = users.replace(entry.user, newEntries);
     nextEntryId += 1;
     id;
   };
@@ -36,12 +36,12 @@ actor {
   };
 
   public shared({ caller }) func updateEntry(entry : CalendarEntry) : async Nat32 {
-    let entries = switch (users.get(caller)) {
+    let entries = switch (users.get(entry.user)) {
       case null null;
       case (?entries) entries;
     };
     let newEntries = List.push<CalendarEntry>(entry, List.filter<CalendarEntry>(entries, func (e) { e.id != entry.id}));
-    let oldEntries = users.replace(caller, newEntries);
+    let oldEntries = users.replace(entry.user, newEntries);
     entry.id;
   };
 

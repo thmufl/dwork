@@ -18,9 +18,7 @@ const CalendarEntryList = (props: {
 }) => {
 	const { userId } = useParams()
 	const { data, isLoading, isError } = props
-
 	const authClient = useContext(AuthClientContext)
-
 	const { register, watch } = useForm<{ name: string }>()
 
 	if (isLoading) {
@@ -44,19 +42,21 @@ const CalendarEntryList = (props: {
 			<ListGroup>
 				{data
 					?.filter(
-						(event) =>
-						event.title
+						(entry) =>
+						entry.title
 								.toLowerCase()
 								.includes(watch('name')?.toLowerCase()) ||
 							watch('name') === undefined
 					)
-					.map((event, index) => (
+					.map((entry, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/${event.id}`}>
-								{event.title}
+							<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/${entry.id}`}>
+								{entry.title}
 							</Link>
 							<br />
-							{event.description}
+							{entry.description}
+							<br />
+							{new Date(Number(entry.date.begin)).toLocaleString()} - {new Date(Number(entry.date.end)).toLocaleString()}
 						</ListGroup.Item>
 					))}
 			</ListGroup>

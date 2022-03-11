@@ -18,9 +18,7 @@ const ContractList = (props: {
 }) => {
 	const { marketId } = useParams()
 	const { data, isLoading, isError } = props
-
 	const authClient = useContext(AuthClientContext)
-
 	const { register, watch } = useForm<{ name: string }>()
 
 	if (isLoading) {

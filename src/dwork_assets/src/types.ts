@@ -1,5 +1,7 @@
 export type CalendarEntryAdapter = {
   id: number,
+  creator: string,
+  user: string,
   title: string,
   description: string,
   date: {
@@ -10,6 +12,8 @@ export type CalendarEntryAdapter = {
 
 export type ContractAdapter = {
   id: number,
+  contractor: string,
+  contractee: string,
   title: string,
   description: string,
   date: {

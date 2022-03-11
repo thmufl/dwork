@@ -20,23 +20,14 @@ module Profiles = {
     var firstName = init.firstName;
     var lastName = init.lastName;
     var description = init.description;
-
-    let concepts = HashMap.HashMap<Nat32, Concept>(8, Nat32.equal, func hash(number : Nat32) : Hash.Hash { number; });
+    var concepts = init.concepts;
 
     public func getId() : Principal {
       id;
     };
 
-    public func conceptInfos() : [ConceptInfo] {
-      var infos = [] : [ConceptInfo];
-      for(concept in concepts.vals()) {
-        infos := Array.append(infos, [concept.info()]);
-      };
-      infos;
-    };
-
     public func info() : ProfileInfo {
-      { id; firstName; lastName; description };
+      { id; firstName; lastName; description; concepts };
     };
   };
 

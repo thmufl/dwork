@@ -63,6 +63,10 @@ const ProfileView = () => {
 					<Col>Description</Col>
 					<Col xs={9}>{data?.description}</Col>
 				</Row>
+				<Row>
+					<Col>Concepts</Col>
+					<Col xs={9}>{data?.concepts.map(concept => concept.preferredLabel).join()}</Col>
+				</Row>
 			</div>
 
 			<Link to={`/markets/${marketId}/profiles/${userId}/update`} className="m-1">Edit Profile</Link>

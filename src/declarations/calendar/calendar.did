@@ -6,10 +6,12 @@ type TimeInterval =
 type Time = int;
 type CalendarEntry = 
  record {
+   creator: principal;
    date: TimeInterval;
    description: text;
    id: nat32;
    title: text;
+   user: principal;
  };
 service : {
   createEntry: (CalendarEntry) -> (nat32);

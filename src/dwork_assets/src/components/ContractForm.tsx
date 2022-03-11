@@ -64,25 +64,32 @@ const ContractForm = () => {
 	)
 
 	useEffect(() => {
-		reset({
-			...data,
-			date: {
-				begin: new Date(Number(data?.date.begin) - timeZoneOffset)
-					.toISOString()
-					.substring(0, 16),
-				end: new Date(Number(data?.date.end) - timeZoneOffset).toISOString().substring(0, 16),
-			},
-		})
+		if (data)
+			reset({
+				...data,
+				contractor: data.contractor.toText(),
+				contractee: data.contractee.toText(),
+				date: {
+					begin: new Date(Number(data.date.begin) - timeZoneOffset)
+						.toISOString()
+						.substring(0, 16),
+					end: new Date(Number(data.date.end) - timeZoneOffset)
+						.toISOString()
+						.substring(0, 16),
+				},
+			})
 	}, [data])
 
 	const onSubmit = async (data: ContractAdapter) => {
 		const contractId = await updateContract({
 			...data,
 			id: Number(data.id || 0),
+			contractor: Principal.fromText(data.contractor),
+			contractee: Principal.fromText(data.contractee),
 			date: {
 				begin: BigInt(Date.parse(data.date.begin)),
-				end: BigInt(Date.parse(data.date.end))
-			}
+				end: BigInt(Date.parse(data.date.end)),
+			},
 		})
 		navigate(`/markets/${marketId}/contracts/${contractId}`)
 	}
@@ -100,6 +107,8 @@ const ContractForm = () => {
 			<h2>Edit Contract</h2>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
+				<Form.Control {...register('contractor')} placeholder="Contractor" />
+				<Form.Control {...register('contractee')} placeholder="Contractee" />
 				<Form.Control {...register('title')} placeholder="Title" />
 				<Form.Control
 					{...register('description')}
@@ -130,7 +139,7 @@ const ContractForm = () => {
 						await deleteContract(Number(contractId))
 						navigate(`/markets/${marketId}/`)
 					}}
-					disabled={isLoading || isUpdating || isDeleting}
+					disabled={isLoading || isUpdating || isDeleting || !contractId}
 				>
 					Delete
 				</Button>
@@ -138,7 +147,9 @@ const ContractForm = () => {
 				<Button
 					className="m-1"
 					variant="primary"
-					onClick={() => navigate(`/markets/${marketId}/contracts/${contractId}`)}
+					onClick={() =>
+						contractId ? navigate(`/markets/${marketId}/contracts/${contractId}`) : navigate(`/markets/${marketId}`)
+					}
 					disabled={isLoading || isUpdating || isDeleting}
 				>
 					Cancel

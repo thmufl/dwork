@@ -5,6 +5,7 @@ import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 
 import Types "Types";
+import Calendar "canister:calendar";
 import Profiles "Profiles";
 import Concepts "Concepts";
 import Contracts "Contracts";
@@ -88,6 +89,8 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
   // Contract
 
   public shared({ caller }) func createContract(contract : ContractInfo) : async Nat32 {
+    let calendarEntry = Calendar.createEntry({ id = 0; creator = caller; user = contract.contractor; title = contract.title; description = contract.description;
+      date = { begin = contract.date.begin; end = contract.date.end } });
     contractRegistry.create(contract);
   };
 

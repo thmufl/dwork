@@ -55,7 +55,7 @@ const CalendarView = () => {
 				</Row>
 			</div> */}
 
-			<h3>Events</h3>
+			<h3>Entries</h3>
 			<CalendarEntryList
 				data={dataEntries || []}
 				isLoading={isLoadingEntries}
