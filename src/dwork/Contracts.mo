@@ -19,13 +19,15 @@ module Contracts = {
     var title = init.title;
     var description = init.description;
     var date = init.date;
+    var place = init.place;
+    var link = init.link;
 
     public func getId() : Nat32 {
       id;
     };
 
     public func info() : ContractInfo {
-      { id; contractor; contractee; title; description; date };
+      { id; contractor; contractee; title; description; date; place; link };
     };
   };
 
@@ -34,7 +36,7 @@ module Contracts = {
     var nextId = Nat32.fromNat(1);
 
     public func create(init : ContractInfo) : Nat32 {
-      let newContract = Contracts.Contract({ id = nextId; contractor = init.contractor; contractee = init.contractee; title = init.title; description = init.description; date = init.date });
+      let newContract = Contracts.Contract({ id = nextId; contractor = init.contractor; contractee = init.contractee; title = init.title; description = init.description; date = init.date; place = init.place; link = init.link });
       contracts.put(newContract.getId(), newContract);
       nextId += 1;
       newContract.getId();
@@ -65,7 +67,4 @@ module Contracts = {
       infos;
     };
   };
-
-  // public func equal(x : Contract, y : Contract) : Bool { x.getId() == y.getId() };
-  // public func hash(x: Contract) : Hash.Hash { x.getId(); };
 };

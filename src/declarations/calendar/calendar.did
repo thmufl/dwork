@@ -10,6 +10,13 @@ type CalendarEntry =
    date: TimeInterval;
    description: text;
    id: nat32;
+   link: text;
+   place: text;
+   status: variant {
+             AVAILABLE;
+             PROVISIONAL;
+             UNAVAILABLE;
+           };
    title: text;
    user: principal;
  };

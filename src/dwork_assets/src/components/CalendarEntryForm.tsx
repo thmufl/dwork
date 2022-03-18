@@ -19,7 +19,6 @@ const CalendarEntryForm = () => {
 	const authClient = useContext(AuthClientContext)
 	const calendarActor = useCalendarActor(authClient)
 	const navigate = useNavigate()
-	const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
 
 	const { register, watch, handleSubmit, reset } =
 		useForm<CalendarEntryAdapter>()
@@ -59,32 +58,11 @@ const CalendarEntryForm = () => {
 
 	useEffect(() => {
 		if (data)
-			reset({
-				...data,
-				creator: data.creator.toText(),
-				user: data.user.toText(),
-				date: {
-					begin: new Date(Number(data.date.begin) - timeZoneOffset)
-						.toISOString()
-						.substring(0, 16),
-					end: new Date(Number(data.date.end) - timeZoneOffset)
-						.toISOString()
-						.substring(0, 16),
-				},
-			})
+			reset(data)
 	}, [data])
 
 	const onSubmit = async (data: CalendarEntryAdapter) => {
-		const entryId = await updateEntry({
-			...data,
-			id: Number(data.id || 0),
-			creator: Principal.fromText(userId!),
-			user: Principal.fromText(userId!),
-			date: {
-				begin: BigInt(Date.parse(data.date.begin)),
-				end: BigInt(Date.parse(data.date.end)),
-			},
-		})
+		const entryId = await updateEntry(data)
 		navigate(`/calendars/${userId}/entries/${entryId}`)
 	}
 
@@ -99,6 +77,9 @@ const CalendarEntryForm = () => {
 	return (
 		<Container>
 			<h2>Edit Calendar Entry</h2>
+			<div className="small">
+				User: {authClient?.getIdentity().getPrincipal().toText()}
+			</div>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control {...register('creator')} required placeholder="Creator" />
@@ -117,6 +98,28 @@ const CalendarEntryForm = () => {
 					{...register('date.end', { required: true })}
 					type="datetime-local"
 				/>
+				<Form.Control {...register('place')} placeholder="Place" />
+				<Form.Group className="mb-3">
+					<Form.Check
+						{...register('status')}
+						type="radio"
+						value="AVAILABLE"
+            label="Available"
+					/>
+          <Form.Check
+						{...register('status')}
+						type="radio"
+						value="PROVISIONAL"
+            label="Provisional"
+					/>
+          <Form.Check
+						{...register('status')}
+						type="radio"
+						value="UNAVAILABLE"
+            label="Unavailable"
+					/>
+				</Form.Group>
+				<Form.Control {...register('link')} placeholder="Link" />
 				<Button
 					className="m-1"
 					variant="primary"

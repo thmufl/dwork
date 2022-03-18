@@ -11,37 +11,31 @@ import {
 	canisterId as dWorkCanisterId,
 } from '../../../declarations/dwork'
 
-import {
-	createActor as createMarketActor,
-} from '../../../declarations/market'
+import { createActor as createMarketActor } from '../../../declarations/market'
 
-export const useCalendarActor = (
-	authClient: AuthClient | undefined,
-) => {
+export const useCalendarActor = (authClient: AuthClient | undefined) => {
 	return createCalendarActor(calendarCanisterId!, {
-    agentOptions: {
-      identity: authClient?.getIdentity()
-    }
-  })
+		agentOptions: {
+			identity: authClient?.getIdentity(),
+		},
+	})
 }
 
-export const useDWorkActor = (
-	authClient: AuthClient | undefined,
-) => {
+export const useDWorkActor = (authClient: AuthClient | undefined) => {
 	return createDWorkActor(dWorkCanisterId!, {
-    agentOptions: {
-      identity: authClient?.getIdentity()
-    }
-  })
+		agentOptions: {
+			identity: authClient?.getIdentity(),
+		},
+	})
 }
 
 export const useMarketActor = (
 	authClient: AuthClient | undefined,
-  canisterId: string | Principal
+	canisterId: string | Principal
 ) => {
-	return createMarketActor(canisterId!, {
-    agentOptions: {
-      identity: authClient?.getIdentity()
-    }
-  })
+	return createMarketActor(canisterId, {
+		agentOptions: {
+			identity: authClient?.getIdentity(),
+		},
+	})
 }

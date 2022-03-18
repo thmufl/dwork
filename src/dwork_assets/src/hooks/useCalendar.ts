@@ -6,18 +6,42 @@ import {
 	CalendarEntry,
 } from '../../../declarations/calendar/calendar.did'
 
+import { CalendarEntryAdapter } from '../types'
+
+const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
+
+const encodeStatus = (status: string) => {
+	switch(status) {
+		case "UNAVAILABLE": return { UNAVAILABLE: null }
+		case "PROVISIONAL": return { PROVISIONAL: null }
+		default: return { AVAILABLE: null }
+	}
+}
+
+const decodeStatus = (status: object) => {
+	switch(Object.keys(status)[0]) {
+		case 'UNAVAILABLE': return "UNAVAILABLE"
+		case 'PROVISIONAL': return "PROVISIONAL"
+		default: return "AVAILABLE"
+	}
+}
+
 export const useUpdateCalendarEntry = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: number) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = (entry: CalendarEntry) => {
+	const action = (data: CalendarEntryAdapter) => {
 		let adapted: CalendarEntry = {
-			...entry,
+			...data,
+			id: Number(data.id || 0),
+			creator: Principal.fromText(data.creator),
+			user: Principal.fromText(data.user),
 			date: {
-				begin: BigInt(entry.date.begin),
-				end: BigInt(entry.date.end)
+				begin: BigInt(Date.parse(data.date.begin)),
+				end: BigInt(Date.parse(data.date.end)),
 			},
+			status: encodeStatus(data.status)
 		}
 		return adapted.id === 0
 			? actor.createEntry(adapted)
@@ -34,7 +58,7 @@ export const useReadCalendarEntry = (
 	onError: ((err: Error) => void) | undefined
 ) => {
 	const action = () => actor.readEntry(user, id)
-	return useQuery<CalendarEntry[], Error, CalendarEntry | undefined>(
+	return useQuery<CalendarEntry[], Error, CalendarEntryAdapter | undefined>(
 		['calendar-entry', user.toText(), id],
 		action,
 		{
@@ -43,10 +67,17 @@ export const useReadCalendarEntry = (
 				data && data[0]
 					? {
 							...data[0],
+							creator: data[0].creator.toText(),
+							user: data[0].user.toText(),
 							date: {
-								begin: data[0].date.begin,
-								end: data[0].date.end,
+								begin: new Date(Number(data[0].date.begin) - timeZoneOffset)
+									.toISOString()
+									.substring(0, 16),
+								end: new Date(Number(data[0].date.end) - timeZoneOffset)
+									.toISOString()
+									.substring(0, 16),
 							},
+							status: decodeStatus(data[0].status)
 					  }
 					: undefined,
 		}
@@ -71,19 +102,26 @@ export const useListCalendarEntries = (
 ) => {
 	const action = () => actor.listEntries(user)
 
-	return useQuery<CalendarEntry[], Error, CalendarEntry[]>(
+	return useQuery<CalendarEntry[], Error, CalendarEntryAdapter[]>(
 		['calendar-entries', user.toText()],
 		action,
 		{
 			onError,
 			select: (data: CalendarEntry[]) =>
-				data.map((entry) => {
-					let adapted: CalendarEntry = {
-						...entry,
-						date: {
-							begin: BigInt(entry.date.begin),
-							end: BigInt(entry.date.end),
-						},
+				data.map((data) => {
+					let adapted: CalendarEntryAdapter = {
+						...data,
+						creator: data.creator.toText(),
+							user: data.user.toText(),
+							date: {
+								begin: new Date(Number(data.date.begin) - timeZoneOffset)
+									.toISOString()
+									.substring(0, 16),
+								end: new Date(Number(data.date.end) - timeZoneOffset)
+									.toISOString()
+									.substring(0, 16),
+							},
+							status: decodeStatus(data.status)
 					}
 					return adapted
 				}),

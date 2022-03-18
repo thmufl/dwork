@@ -23,7 +23,7 @@ actor Calendar {
     };
     let id = nextEntryId;
     let newEntries = List.push<CalendarEntry>({ id; creator = caller; user = entry.user; title = entry.title; description = entry.description;
-      date = { begin = entry.date.begin; end = entry.date.end } }, entries);
+      date = { begin = entry.date.begin; end = entry.date.end }; status = entry.status; place = entry.place; link = entry.link }, entries);
     let oldEntries = users.replace(entry.user, newEntries);
     nextEntryId += 1;
     id;

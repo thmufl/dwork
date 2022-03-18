@@ -58,6 +58,8 @@ type ContractInfo =
    date: TimeInterval;
    description: text;
    id: nat32;
+   link: text;
+   place: text;
    title: text;
  };
 type ConceptInfo__1 = 

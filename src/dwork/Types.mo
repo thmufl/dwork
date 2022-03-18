@@ -42,6 +42,8 @@ public type ConceptInfo = {
     title : Text;
     description : Text;
     date : TimeInterval;
+    place : Text;
+    link : Text;
     // isRoot : Bool;
     // broader : [?Concept];
     // narrower : [?Concept];
@@ -61,8 +63,10 @@ public type ConceptInfo = {
     creator : Principal;
     user : Principal;
     date : TimeInterval;
-    //place : Text;
+    status : { #AVAILABLE; #PROVISIONAL; #UNAVAILABLE };
+    place : Text;
     title : Text;
     description : Text;
+    link : Text;
   };
 };

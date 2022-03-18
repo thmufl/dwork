@@ -53,11 +53,23 @@ const CalendarEntryView = () => {
 				</Row>
 				<Row>
 					<Col>Begin</Col>
-					<Col xs={9}>{new Date(Number(data?.date.begin!)).toLocaleString()}</Col>
+					<Col xs={9}>{new Date(data?.date.begin!).toLocaleString()}</Col>
 				</Row>
 				<Row>
 					<Col>End</Col>
-					<Col xs={9}>{new Date(Number(data?.date.end!)).toLocaleString()}</Col>
+					<Col xs={9}>{new Date(data?.date.end!).toLocaleString()}</Col>
+				</Row>
+				<Row>
+					<Col>Place</Col>
+					<Col xs={9}>{data?.place}</Col>
+				</Row>
+				<Row>
+					<Col>Status</Col>
+					<Col xs={9}>{data?.status}</Col>
+				</Row>
+				<Row>
+					<Col>Link</Col>
+					<Col xs={9}>{data?.link}</Col>
 				</Row>
 			</div>
 

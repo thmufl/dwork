@@ -13,7 +13,9 @@ export interface ContractInfo {
   'id' : number,
   'title' : string,
   'date' : TimeInterval,
+  'link' : string,
   'description' : string,
+  'place' : string,
   'contractee' : Principal,
   'contractor' : Principal,
 }

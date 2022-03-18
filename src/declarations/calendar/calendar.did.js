@@ -3,11 +3,18 @@ export const idlFactory = ({ IDL }) => {
   const TimeInterval = IDL.Record({ 'end' : Time, 'begin' : Time });
   const CalendarEntry = IDL.Record({
     'id' : IDL.Nat32,
+    'status' : IDL.Variant({
+      'AVAILABLE' : IDL.Null,
+      'PROVISIONAL' : IDL.Null,
+      'UNAVAILABLE' : IDL.Null,
+    }),
     'title' : IDL.Text,
     'creator' : IDL.Principal,
     'date' : TimeInterval,
+    'link' : IDL.Text,
     'user' : IDL.Principal,
     'description' : IDL.Text,
+    'place' : IDL.Text,
   });
   return IDL.Service({
     'createEntry' : IDL.Func([CalendarEntry], [IDL.Nat32], []),

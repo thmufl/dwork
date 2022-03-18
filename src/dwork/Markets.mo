@@ -100,7 +100,7 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
 
   public shared({ caller }) func createContract(contract : ContractInfo) : async Nat32 {
     let calendarEntry = Calendar.createEntry({ id = 0; creator = caller; user = contract.contractor; title = contract.title; description = contract.description;
-      date = { begin = contract.date.begin; end = contract.date.end } });
+      date = { begin = contract.date.begin; end = contract.date.end }; place = contract.place; status = #UNAVAILABLE; link = contract.link });
     contractRegistry.create(contract);
   };
 

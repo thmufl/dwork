@@ -10,9 +10,11 @@ import {
 	ProfileInfo,
 } from '../../../declarations/market/market.did'
 
+import { CalendarEntryAdapter } from '../types'
+
 const CalendarSelect = (props: {
 	//profile: ProfileInfo,
-	calendarEntries: CalendarEntry[],
+	calendarEntries: CalendarEntryAdapter[],
 	period: { begin: Date, end: Date },
 	width: number
 	height: number
@@ -57,7 +59,7 @@ const CalendarSelect = (props: {
 			const entry = svg
 				.select('.entries')
 				.selectAll('.entry')
-				.data(calendarEntries, (d) => (d as CalendarEntry).date.begin.toString())
+				.data(calendarEntries) //, (d) => (d as CalendarEntry).date.begin.toString())
 				.join('rect')
 				.classed('entry', true)
 				.on('click', onClick)
@@ -67,22 +69,22 @@ const CalendarSelect = (props: {
 
 			entry
 				.transition()
-				.attr('x', (d) => scale(new Date(Number(d.date.begin))))
+				.attr('x', (d) => scale(new Date(d.date.begin)))
 				.attr('y', 0)
 				.attr(
 					'width',
 					(d) =>
-						scale(new Date(Number(d.date.end))) -
-						scale(new Date(Number(d.date.begin)))
+						scale(new Date(d.date.end)) -
+						scale(new Date(d.date.begin))
 				)
 				.attr('height', height - 15)
 				.attr('fill', (d) => {
-					switch (Object.keys('BOOKED')[0]) {
+					switch (d.status) {
 						case 'AVAILABLE':
 							return 'green'
-						case 'RESERVED':
+						case 'PROVISIONAL':
 							return 'orange'
-						case 'BOOKED':
+						case 'UNAVAILABLE':
 							return 'red'
 						default:
 							return 'grey'

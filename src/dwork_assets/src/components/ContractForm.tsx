@@ -108,6 +108,8 @@ const ContractForm = () => {
 					{...register('date.end', { required: true })}
 					type="datetime-local"
 				/>
+					<Form.Control {...register('place')} placeholder="Place" />
+					<Form.Control {...register('link')} placeholder="Link" />
 				<Button
 					className="m-1"
 					variant="primary"

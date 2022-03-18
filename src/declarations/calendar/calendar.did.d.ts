@@ -1,11 +1,16 @@
 import type { Principal } from '@dfinity/principal';
 export interface CalendarEntry {
   'id' : number,
+  'status' : { 'AVAILABLE' : null } |
+    { 'PROVISIONAL' : null } |
+    { 'UNAVAILABLE' : null },
   'title' : string,
   'creator' : Principal,
   'date' : TimeInterval,
+  'link' : string,
   'user' : Principal,
   'description' : string,
+  'place' : string,
 }
 export type Time = bigint;
 export interface TimeInterval { 'end' : Time, 'begin' : Time }

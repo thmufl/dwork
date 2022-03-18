@@ -22,7 +22,9 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Nat32,
     'title' : IDL.Text,
     'date' : TimeInterval,
+    'link' : IDL.Text,
     'description' : IDL.Text,
+    'place' : IDL.Text,
     'contractee' : IDL.Principal,
     'contractor' : IDL.Principal,
   });

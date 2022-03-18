@@ -11,8 +11,10 @@ import { AuthClientContext } from '../App'
 import { useDeleteCalendarEntry, useListCalendarEntries } from '../hooks/useCalendar'
 import { Actor } from '@dfinity/agent'
 
+import { CalendarEntryAdapter } from '../types'
+
 const CalendarEntryList = (props: {
-	data: CalendarEntry[]
+	data: CalendarEntryAdapter[]
 	isLoading: any
 	isError: any
 }) => {
@@ -50,13 +52,12 @@ const CalendarEntryList = (props: {
 					)
 					.map((entry, index) => (
 						<ListGroup.Item key={index}>
+							<div className="small">{new Date(entry.date.begin).toLocaleString()} - {new Date(entry.date.end).toLocaleString()} {entry.status}</div>
 							<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/${entry.id}`}>
 								{entry.title}
 							</Link>
 							<br />
 							{entry.description}
-							<br />
-							{new Date(Number(entry.date.begin)).toLocaleString()} - {new Date(Number(entry.date.end)).toLocaleString()}
 						</ListGroup.Item>
 					))}
 			</ListGroup>

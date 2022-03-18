@@ -7,7 +7,10 @@ export type CalendarEntryAdapter = {
   date: {
     begin: string,
     end: string
-  }
+  },
+  place: string,
+  status: string,
+  link: string
 }
 
 export type ContractAdapter = {
@@ -19,5 +22,7 @@ export type ContractAdapter = {
   date: {
     begin: string,
     end: string
-  }
+  },
+  place: string,
+  link: string,
 }

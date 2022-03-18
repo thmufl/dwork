@@ -5,11 +5,9 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { AuthClientContext } from '../App'
 
 import { Principal } from '@dfinity/principal'
-import { AuthClient } from '@dfinity/auth-client'
-import { ActorSubclass } from '@dfinity/agent'
+import dayjs from 'dayjs'
 
-import { useCalendarActor } from '../hooks'
-import { useListCalendarEntries } from '../hooks'
+import { useCalendarActor, useListCalendarEntries } from '../hooks'
 import { CalendarEntryList, CalendarSelect } from './'
 
 const CalendarView = () => {
@@ -19,7 +17,11 @@ const CalendarView = () => {
 
 	useEffect(() => {}, [])
 
-	const { data: dataEntries, isLoading: isLoadingEntries, isError: isErrorEntries } = useListCalendarEntries(
+	const {
+		data: dataEntries,
+		isLoading: isLoadingEntries,
+		isError: isErrorEntries,
+	} = useListCalendarEntries(
 		calendarActor,
 		Principal.fromText(userId!),
 		() => console.log('success'),
@@ -39,19 +41,23 @@ const CalendarView = () => {
 			<h2>Calendar</h2>
 			<div>User: {authClient?.getIdentity().getPrincipal().toText()}</div>
 
-			{/* <div>
-				<Row>
-					<Col>Id</Col>
-					<Col xs={9}>{userId}</Col>
-				</Row>
-			</div> */}
-
 			<h3>Entries</h3>
 			<CalendarEntryList
 				data={dataEntries || []}
 				isLoading={isLoadingEntries}
 				isError={isErrorEntries}
 			></CalendarEntryList>
+
+			<CalendarSelect
+				calendarEntries={dataEntries || []}
+				period={{
+					begin: dayjs().startOf('day').toDate(),
+					end: dayjs().endOf('day').toDate(),
+				}}
+				width={500}
+				height={50}
+				onClick={() => console.log('click')}
+			/>
 		</Container>
 	)
 }

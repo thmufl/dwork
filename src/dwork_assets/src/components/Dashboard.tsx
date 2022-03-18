@@ -44,9 +44,9 @@ const Dashboard = () => {
 	return (
 		<Container>
 			<h2>Dashboard</h2>
-			<p className="small">
+			<div className="small">
 				User: {authClient?.getIdentity().getPrincipal().toText()}
-			</p>
+			</div>
 
 			<h3>Calendar</h3>
 			<CalendarEntryList
