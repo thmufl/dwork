@@ -26,6 +26,12 @@ export const idlFactory = ({ IDL }) => {
     'contractee' : IDL.Principal,
     'contractor' : IDL.Principal,
   });
+  const InvitationInfo = IDL.Record({
+    'id' : IDL.Nat32,
+    'title' : IDL.Text,
+    'description' : IDL.Text,
+    'concepts' : IDL.Vec(ConceptInfo),
+  });
   const MarketInfo = IDL.Record({
     'id' : IDL.Principal,
     'name' : IDL.Text,
@@ -35,15 +41,28 @@ export const idlFactory = ({ IDL }) => {
     'addProfile' : IDL.Func([ProfileInfo], [], []),
     'createConcept' : IDL.Func([ConceptInfo__1], [IDL.Nat32], []),
     'createContract' : IDL.Func([ContractInfo], [IDL.Nat32], []),
+    'createInvitation' : IDL.Func([InvitationInfo], [IDL.Nat32], []),
     'deleteConcept' : IDL.Func([IDL.Nat32], [], []),
     'deleteContract' : IDL.Func([IDL.Nat32], [], []),
+    'deleteInvitation' : IDL.Func([IDL.Nat32], [], []),
     'deleteProfile' : IDL.Func([IDL.Principal], [], []),
+    'findProfilesByConcept' : IDL.Func(
+        [IDL.Vec(ConceptInfo__1)],
+        [IDL.Vec(ProfileInfo)],
+        ['query'],
+      ),
     'listConcepts' : IDL.Func([], [IDL.Vec(ConceptInfo__1)], ['query']),
     'listContracts' : IDL.Func([], [IDL.Vec(ContractInfo)], ['query']),
+    'listInvitations' : IDL.Func([], [IDL.Vec(InvitationInfo)], ['query']),
     'listProfiles' : IDL.Func([], [IDL.Vec(ProfileInfo)], ['query']),
     'readConcept' : IDL.Func([IDL.Nat32], [IDL.Opt(ConceptInfo__1)], ['query']),
     'readContract' : IDL.Func([IDL.Nat32], [IDL.Opt(ContractInfo)], ['query']),
     'readInfo' : IDL.Func([], [MarketInfo], ['query']),
+    'readInvitation' : IDL.Func(
+        [IDL.Nat32],
+        [IDL.Opt(InvitationInfo)],
+        ['query'],
+      ),
     'readProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(ProfileInfo)],
@@ -52,6 +71,7 @@ export const idlFactory = ({ IDL }) => {
     'updateConcept' : IDL.Func([ConceptInfo__1], [IDL.Nat32], []),
     'updateContract' : IDL.Func([ContractInfo], [IDL.Nat32], []),
     'updateInfo' : IDL.Func([MarketInfo], [], []),
+    'updateInvitation' : IDL.Func([InvitationInfo], [IDL.Nat32], []),
     'updateProfile' : IDL.Func([ProfileInfo], [ProfileInfo], []),
   });
   return Market;

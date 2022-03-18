@@ -5,30 +5,21 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { AuthClientContext } from '../App'
 
 import { Principal } from '@dfinity/principal'
-import { AuthClient } from '@dfinity/auth-client'
 import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
+import { MarketInfo } from '../../../declarations/market/market.did'
 
-import { createActor } from '../../../declarations/market'
-
-import { useReadProfile, useReadMarketInfo, useListConcepts, useListProfiles } from '../hooks'
+import { useMarketActor, useReadProfile, useReadMarketInfo, useListConcepts, useListProfiles } from '../hooks'
 import { ConceptList, ProfileList } from '.'
 
 const MarketView = () => {
 	const { marketId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const marketActor = useMarketActor(authClient, marketId!)
 
 	useEffect(() => {}, [])
 
 	const { data, isLoading, isError } = useReadMarketInfo(
-		getActor(),
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -38,7 +29,7 @@ const MarketView = () => {
 		isLoading: isLoadingConcepts,
 		isError: isErrorConcepts,
 	} = useListConcepts(
-		getActor(),
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -48,7 +39,7 @@ const MarketView = () => {
 		isLoading: isLoadingProfile,
 		isError: isErrorUProfile,
 	} = useReadProfile(
-		getActor(),
+		marketActor,
 		authClient?.getIdentity().getPrincipal()!,
 		() => console.log('success read profile'),
 		() => console.log('error read profile')
@@ -57,9 +48,11 @@ const MarketView = () => {
 	const {
 		data: dataProfiles,
 		isLoading: isLoadingProfiles,
+		isRefetching: isRefetchingProfiles,
 		isError: isErrorProfiles,
+		isRefetchError: isRefetchErrorProfiles
 	} = useListProfiles(
-		getActor(),
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -119,7 +112,9 @@ const MarketView = () => {
 			<ProfileList
 				data={dataProfiles || []}
 				isLoading={isLoadingProfiles}
+				isRefetching={isRefetchingProfiles}
 				isError={isErrorProfiles}
+				isErrorRefetching={isRefetchErrorProfiles}
 			></ProfileList>
 		</Container>
 	)

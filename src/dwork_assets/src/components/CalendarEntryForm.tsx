@@ -4,13 +4,7 @@ import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
-
-import {
-	_SERVICE,
-	CalendarEntry,
-} from '../../../declarations/calendar/calendar.did'
-import { createActor, canisterId } from '../../../declarations/calendar'
+import { useCalendarActor } from '../hooks'
 
 import { AuthClientContext } from '../App'
 import {
@@ -23,21 +17,15 @@ import { CalendarEntryAdapter } from '../types'
 const CalendarEntryForm = () => {
 	const { userId, entryId } = useParams()
 	const authClient = useContext(AuthClientContext)
+	const calendarActor = useCalendarActor(authClient)
 	const navigate = useNavigate()
 	const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
 
 	const { register, watch, handleSubmit, reset } =
 		useForm<CalendarEntryAdapter>()
 
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(canisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
 	const { data, isLoading, isError } = useReadCalendarEntry(
-		getActor(),
+		calendarActor,
 		Principal.fromText(userId!),
 		entryId ? parseInt(entryId) : 0,
 		() => console.log('success read calendar entry'),
@@ -51,7 +39,7 @@ const CalendarEntryForm = () => {
 		isError: isErrorUpdate,
 		error: errorUpdate,
 	} = useUpdateCalendarEntry(
-		getActor(),
+		calendarActor,
 		() => console.log('success update calendar entry'),
 		() => console.log('error update calendar entry')
 	)
@@ -63,7 +51,7 @@ const CalendarEntryForm = () => {
 		isError: isErrorDelete,
 		error: errorDelete,
 	} = useDeleteCalendarEntry(
-		getActor(),
+		calendarActor,
 		Principal.fromText(userId!),
 		() => console.log('success delete concept'),
 		() => console.log('error delete concept')
@@ -115,6 +103,7 @@ const CalendarEntryForm = () => {
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control {...register('creator')} required placeholder="Creator" />
 				<Form.Control {...register('user')} required placeholder="User" />
+				<Form.Control {...register('title')} required placeholder="Title" />
 				<Form.Control
 					{...register('description')}
 					as="textarea"

@@ -17,6 +17,11 @@ service : {
   createEntry: (CalendarEntry) -> (nat32);
   deleteEntry: (principal, nat32) -> ();
   listEntries: (principal) -> (vec CalendarEntry) query;
+  listEntriesOf: (vec principal) ->
+   (vec record {
+          entries: vec CalendarEntry;
+          "principal": principal;
+        }) query;
   readEntry: (principal, nat32) -> (opt CalendarEntry) query;
   updateEntry: (CalendarEntry) -> (nat32);
 }

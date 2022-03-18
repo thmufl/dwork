@@ -1,55 +1,42 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-
-import {
-	createActor as createCalendarActor,
-	canisterId as calendarCanisterId,
-} from '../../../declarations/calendar'
-
-import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { createActor as createDWorkActor, canisterId as dWorkCanisterId } from '../../../declarations/dwork'
-
-import { AuthClientContext } from '../App'
-
-import { CalendarEntryList } from './'
-import { useListCalendarEntries } from '../hooks'
-
-import { MarketList } from './'
-import { useCreateMarket, useReadMarkets } from '../hooks/useDWork'
+import dayjs from 'dayjs'
 
 import { Principal } from '@dfinity/principal'
 
+import { AuthClientContext } from '../App'
+import { CalendarEntryList, CalendarSelect } from './'
+
+import { MarketList } from './'
+import {
+	useCalendarActor,
+	useDWorkActor,
+	useCreateMarket,
+	useReadMarkets,
+	useListCalendarEntries,
+} from '../hooks'
+
 const Dashboard = () => {
 	const authClient = useContext(AuthClientContext)
-
-	const getCalendarActor = () =>
-		createCalendarActor(calendarCanisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
-	const getDWorkActor = () =>
-		createDWorkActor(dWorkCanisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const calendarActor = useCalendarActor(authClient)
+	const dWorkActor = useDWorkActor(authClient)
 
 	const {
-		data: dataEvents,
-		isLoading: isLoadingEvents,
-		isError: isErrorEvents,
+		data: dataCalendar,
+		isLoading: isLoadingCalendar,
+		isError: isErrorCalendar,
 	} = useListCalendarEntries(
-		getCalendarActor(),
-		authClient?.getIdentity() ? authClient?.getIdentity().getPrincipal() : Principal.anonymous(),
+		calendarActor,
+		authClient?.getIdentity()
+			? authClient?.getIdentity().getPrincipal()
+			: Principal.anonymous(),
 		() => console.log('success'),
 		() => console.log('error')
 	)
 
 	const { data, isLoading, isError } = useReadMarkets(
-		getDWorkActor(),
+		dWorkActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -63,10 +50,22 @@ const Dashboard = () => {
 
 			<h3>Calendar</h3>
 			<CalendarEntryList
-				data={dataEvents || []}
-				isLoading={isLoadingEvents}
-				isError={isErrorEvents}
+				data={dataCalendar || []}
+				isLoading={isLoadingCalendar}
+				isError={isErrorCalendar}
 			></CalendarEntryList>
+
+			<CalendarSelect
+				calendarEntries={dataCalendar || []}
+				period={{
+					begin: dayjs().startOf('week').toDate(),
+					end: dayjs().endOf('week').toDate(),
+				}}
+				width={500}
+				height={50}
+				onClick={() => console.log('click')}
+			/>
+
 			<Link
 				to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}`}
 			>

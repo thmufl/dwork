@@ -1,5 +1,6 @@
 import Debug "mo:base/Debug";
 import Nat32 "mo:base/Nat32";
+import Array "mo:base/Array";
 import Principal "mo:base/Principal";
 import List "mo:base/List";
 import Hash "mo:base/Hash";
@@ -60,6 +61,18 @@ actor Calendar {
       case null [];
       case (?entries) List.toArray(entries);
     };
+  };
+
+  public query func listEntriesOf(principals : [Principal]) : async [{principal: Principal; entries: [CalendarEntry]}] {
+    var result = List.nil<{principal: Principal; entries: [CalendarEntry]}>();
+    for(principal in principals.vals()) {
+      let entries = switch (users.get(principal)) {
+        case null [];
+        case (?entries) List.toArray(entries);
+      };
+      result := List.push<{principal: Principal; entries: [CalendarEntry]}>({principal; entries}, result);
+    };
+    List.toArray(result);
   };
 };
 

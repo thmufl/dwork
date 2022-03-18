@@ -3,30 +3,21 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
-import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
-
-import { _SERVICE, MarketInfo, ConceptInfo } from '../../../declarations/market/market.did'
-import { createActor } from '../../../declarations/market'
+import { ConceptInfo } from '../../../declarations/market/market.did'
 
 import { AuthClientContext } from '../App'
+import { useMarketActor } from '../hooks'
 import { useReadConcept, useUpdateConcept, useDeleteConcept } from '../hooks'
 
 const ConceptForm = () => {
 	const { marketId, conceptId } = useParams()
 	const authClient = useContext(AuthClientContext)
+	const marketActor = useMarketActor(authClient, marketId!)
 	const navigate = useNavigate()
 	const { register, watch, handleSubmit, reset } = useForm<ConceptInfo>()
 
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
 		const { data, isLoading, isError } = useReadConcept(
-			getActor(),
+			marketActor,
 			conceptId ? parseInt(conceptId) : 0,
 			() => console.log('success read concept'),
 			() => console.log('error read concept')
@@ -39,7 +30,7 @@ const ConceptForm = () => {
 		isError: isErrorUpdate,
 		error: errorUpdate,
 	} = useUpdateConcept(
-		getActor(),
+		marketActor,
 		() => console.log('success update concept'),
 		() => console.log('error update concept')
 	)
@@ -51,7 +42,7 @@ const ConceptForm = () => {
 		isError: isErrorDelete,
 		error: errorDelete,
 	} = useDeleteConcept(
-		getActor(),
+		marketActor,
 		() => console.log('success delete concept'),
 		() => console.log('error delete concept')
 	)

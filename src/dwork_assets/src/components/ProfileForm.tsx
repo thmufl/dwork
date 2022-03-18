@@ -12,41 +12,33 @@ import {
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
 
 import {
-	_SERVICE,
 	ProfileInfo,
 	ConceptInfo,
 } from '../../../declarations/market/market.did'
-import { createActor } from '../../../declarations/market'
 
 import { AuthClientContext } from '../App'
 import {
+	useMarketActor,
 	useAddProfile,
 	useReadProfile,
 	useUpdateProfile,
 	useDeleteProfile,
 	useListConcepts,
-} from '../hooks/useMarket'
+} from '../hooks'
 
 const ProfileForm = () => {
 	const { marketId, userId } = useParams()
 	const authClient = useContext(AuthClientContext)
+	const marketActor = useMarketActor(authClient, marketId!)
 	const navigate = useNavigate()
 
 	const [added, setAdded] = useState(false)
 	const { register, watch, handleSubmit, reset } = useForm<ProfileInfo>()
 
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
 	const { data, isLoading, isError } = useReadProfile(
-		getActor(),
+		marketActor,
 		Principal.fromText(userId!),
 		() => console.log('success read user'),
 		() => console.log('error read read')
@@ -57,7 +49,7 @@ const ProfileForm = () => {
 		isLoading: isLoadingConceptList,
 		isError: isErrorConceptList,
 	} = useListConcepts(
-		getActor(),
+		marketActor,
 		() => console.log('success read concept list'),
 		() => console.log('error read concept list')
 	)
@@ -69,7 +61,7 @@ const ProfileForm = () => {
 		isError: isErrorAdd,
 		error: errorAdd,
 	} = useAddProfile(
-		getActor(),
+		marketActor,
 		() => console.log('success add profile'),
 		() => console.log('error add profile')
 	)
@@ -81,7 +73,7 @@ const ProfileForm = () => {
 		isError: isErrorUpdate,
 		error: errorUpdate,
 	} = useUpdateProfile(
-		getActor(),
+		marketActor,
 		() => console.log('success update profile'),
 		() => console.log('error update profile')
 	)
@@ -93,7 +85,7 @@ const ProfileForm = () => {
 		isError: isErrorDelete,
 		error: errorDelete,
 	} = useDeleteProfile(
-		getActor(),
+		marketActor,
 		() => console.log('success delete profile'),
 		() => console.log('error delete profile')
 	)

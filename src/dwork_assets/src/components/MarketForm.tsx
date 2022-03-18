@@ -4,30 +4,20 @@ import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
-
 import { MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { _SERVICE } from '../../../declarations/market/market.did'
-import { createActor } from '../../../declarations/market'
 
 import { AuthClientContext } from '../App'
-import { useReadMarketInfo, useUpdateMarketInfo } from '../hooks/useMarket'
+import { useMarketActor, useReadMarketInfo, useUpdateMarketInfo } from '../hooks'
 
 const MarketForm = () => {
 	const { marketId } = useParams()
 	const authClient = useContext(AuthClientContext)
+	const marketActor = useMarketActor(authClient, marketId!)
 	const navigate = useNavigate()
   const { register, watch, handleSubmit, reset } = useForm<MarketInfo>()
 
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
 	const { data, isLoading, isError } = useReadMarketInfo(
-		getActor(),
+		marketActor,
 		() => console.log('success read market'),
 		() => console.log('error read market')
 	)
@@ -39,7 +29,7 @@ const MarketForm = () => {
 		isError: isErrorUpdate,
 		error: errorUpdate,
 	} = useUpdateMarketInfo(
-		getActor(),
+		marketActor,
 		() => console.log('success update market'),
 		() => console.log('error update market')
 	)

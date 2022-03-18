@@ -22,6 +22,8 @@ import {
 	CalendarView,
 	CalendarEntryView,
 	CalendarEntryForm,
+	InvitationView,
+	InvitationForm,
 } from './components'
 
 import { AuthClient } from '@dfinity/auth-client'
@@ -131,10 +133,20 @@ const App = () => {
 						/>
 
 						<Route
-							path="/calendars/:userId"
-							element={<CalendarView />}
+							path="/markets/:marketId/invitations/create"
+							element={<InvitationForm />}
 						/>
-							<Route
+						<Route
+							path="/markets/:marketId/invitations/:invitationId"
+							element={<InvitationView />}
+						/>
+						<Route
+							path="/markets/:marketId/invitations/:invitationId/update"
+							element={<InvitationForm />}
+						/>
+
+						<Route path="/calendars/:userId" element={<CalendarView />} />
+						<Route
 							path="/calendars/:userId/entries/:entryId"
 							element={<CalendarEntryView />}
 						/>
@@ -142,7 +154,7 @@ const App = () => {
 							path="/calendars/:userId/entries/create"
 							element={<CalendarEntryForm />}
 						/>
-							<Route
+						<Route
 							path="/calendars/:userId/entries/:entryId/update"
 							element={<CalendarEntryForm />}
 						/>

@@ -4,36 +4,21 @@ import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
-
-import {
-	_SERVICE,
-	MarketInfo,
-	ContractInfo,
-} from '../../../declarations/market/market.did'
-import { createActor } from '../../../declarations/market'
-
 import { AuthClientContext } from '../App'
 import { ContractAdapter } from '../types'
-import { useReadContract, useUpdateContract, useDeleteContract } from '../hooks'
+import { useMarketActor, useReadContract, useUpdateContract, useDeleteContract } from '../hooks'
 
 const ContractForm = () => {
 	const { marketId, contractId } = useParams()
 	const authClient = useContext(AuthClientContext)
+	const marketActor = useMarketActor(authClient, marketId!)
 	const navigate = useNavigate()
 	const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
 
 	const { register, watch, handleSubmit, reset } = useForm<ContractAdapter>()
 
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
-
 	const { data, isLoading, isError } = useReadContract(
-		getActor(),
+		marketActor,
 		contractId ? parseInt(contractId) : 0,
 		() => console.log('success read contract'),
 		() => console.log('error read contract')
@@ -46,7 +31,7 @@ const ContractForm = () => {
 		isError: isErrorUpdate,
 		error: errorUpdate,
 	} = useUpdateContract(
-		getActor(),
+		marketActor,
 		() => console.log('success update contract'),
 		() => console.log('error update contract')
 	)
@@ -58,7 +43,7 @@ const ContractForm = () => {
 		isError: isErrorDelete,
 		error: errorDelete,
 	} = useDeleteContract(
-		getActor(),
+		marketActor,
 		() => console.log('success delete contract'),
 		() => console.log('error delete contract')
 	)

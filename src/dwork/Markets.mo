@@ -9,6 +9,7 @@ import Calendar "canister:calendar";
 import Profiles "Profiles";
 import Concepts "Concepts";
 import Contracts "Contracts";
+import Invitations "Invitations";
 
 shared({ caller = initializer }) actor class Market(init: { name : Text; description : Text }) = this {
 
@@ -16,6 +17,8 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
   type ProfileInfo = Types.ProfileInfo;
   type ConceptInfo = Types.ConceptInfo;
   type ContractInfo = Types.ContractInfo;
+  type InvitationInfo = Types.InvitationInfo;
+  type CalendarEntry = Types.CalendarEntry;
 
   var name = init.name;
   var description = init.description;
@@ -23,6 +26,7 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
   let profileRegistry = Profiles.ProfileRegistry();
   let conceptScheme = Concepts.ConceptScheme();
   let contractRegistry = Contracts.ContractRegistry();
+  let invitationRegistry = Invitations.InvitationRegistry({ conceptScheme; profileRegistry });
 
   public query func readInfo() : async MarketInfo {
     let id = Principal.fromActor(this);
@@ -86,6 +90,12 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     profileRegistry.list();
   };
 
+  public query func findProfilesByConcept(concepts : [ConceptInfo]) : async [ProfileInfo] {
+    let result = profileRegistry.findProfilesByConcept(concepts);
+    //Debug.print("findProfilesByConcept: " # debug_show(result));
+    result;
+  };
+
   // Contract
 
   public shared({ caller }) func createContract(contract : ContractInfo) : async Nat32 {
@@ -113,4 +123,28 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
     contractRegistry.list();
   };
 
+  // Invitations
+
+  public shared({ caller }) func createInvitation(invitation : InvitationInfo) : async Nat32 {
+    invitationRegistry.create(invitation);
+  };
+
+  public query func readInvitation(id: Nat32) : async ?InvitationInfo {
+    let invitation = switch (invitationRegistry.read(id)) {
+      case null null;
+      case (?invitation) ?invitation.info();
+    };
+  };
+
+  public shared({ caller }) func updateInvitation(invitation : InvitationInfo) : async Nat32 {
+    invitationRegistry.update(invitation);
+  };
+
+  public shared({ caller }) func deleteInvitation(id: Nat32) : async () {
+    invitationRegistry.delete(id);
+  };
+
+  public query func listInvitations() : async [InvitationInfo] {
+    invitationRegistry.list();
+  };
 };

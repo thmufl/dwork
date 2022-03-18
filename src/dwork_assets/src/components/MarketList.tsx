@@ -4,12 +4,10 @@ import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { dwork, createActor, canisterId } from '../../../declarations/dwork'
+import { MarketInfo } from '../../../declarations/dwork/dwork.did'
 
 import { AuthClientContext } from '../App'
-import { useDeleteMarket } from '../hooks/useDWork'
-import { Actor } from '@dfinity/agent'
+import { useDWorkActor, useDeleteMarket } from '../hooks'
 
 const MarketList = (props: {
 	data: MarketInfo[]
@@ -19,14 +17,8 @@ const MarketList = (props: {
 	const { data, isLoading, isError } = props
 
 	const authClient = useContext(AuthClientContext)
+	const dWorkActor = useDWorkActor(authClient)
 	const navigate = useNavigate()
-
-	const getActor = () =>
-		createActor(canisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
 
 	const {
 		mutateAsync: deleteMarket,
@@ -35,7 +27,7 @@ const MarketList = (props: {
 		isError: isErrorDelete,
 		error: errorDelete,
 	} = useDeleteMarket(
-		getActor(),
+		dWorkActor,
 		() => console.log('success delete market'),
 		() => console.log('error delete market')
 	)

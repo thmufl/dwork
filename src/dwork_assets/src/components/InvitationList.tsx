@@ -3,19 +3,17 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
-import { _SERVICE, ConceptInfo } from '../../../declarations/market/market.did'
+import { InvitationInfo } from '../../../declarations/market/market.did'
 import { AuthClientContext } from '../App'
 
-const ConceptList = (props: {
-	data: ConceptInfo[]
+const InvitationList = (props: {
+	data: InvitationInfo[]
 	isLoading: any
 	isError: any
 }) => {
 	const { marketId } = useParams()
 	const { data, isLoading, isError } = props
-
 	const authClient = useContext(AuthClientContext)
-
 	const { register, watch } = useForm<{ name: string }>()
 
 	if (isLoading) {
@@ -28,34 +26,34 @@ const ConceptList = (props: {
 
 	return (
 		<>
-			<Link to={`/markets/${marketId}/concepts/create`}>Create Concept</Link>
+			<Link to={`/markets/${marketId}/invitations/create`}>Create Invitation</Link>
 			<Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
-					placeholder="Filter concepts by label."
+					placeholder="Filter invitations by title."
 				/>
 			</Form>
 
 			<ListGroup>
 				{data
 					?.filter(
-						(concept) =>
-						concept.preferredLabel
+						(invitation) =>
+						invitation.title
 								.toLowerCase()
 								.includes(watch('name')?.toLowerCase()) ||
 							watch('name') === undefined
 					)
-					.map((concept, index) => (
+					.map((invitation, index) => (
 						<ListGroup.Item key={index}>
-							<Link to={`/markets/${marketId}/concepts/${concept.id}`}>
-								{concept.preferredLabel}
+							<Link to={`/markets/${marketId}/invitations/${invitation.id}`}>
+								{invitation.title}
 							</Link>
 							<br />
-							{concept.description}
+							{invitation.description}
 						</ListGroup.Item>
 					))}
 			</ListGroup>
 		</>
 	)
 }
-export default ConceptList
+export default InvitationList

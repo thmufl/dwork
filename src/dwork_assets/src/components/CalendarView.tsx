@@ -7,29 +7,20 @@ import { AuthClientContext } from '../App'
 import { Principal } from '@dfinity/principal'
 import { AuthClient } from '@dfinity/auth-client'
 import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE } from '../../../declarations/calendar/calendar.did'
 
-import { createActor, canisterId } from '../../../declarations/calendar'
-
+import { useCalendarActor } from '../hooks'
 import { useListCalendarEntries } from '../hooks'
-import { CalendarEntryList } from './'
-
+import { CalendarEntryList, CalendarSelect } from './'
 
 const CalendarView = () => {
 	const { userId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(canisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const calendarActor = useCalendarActor(authClient)
 
 	useEffect(() => {}, [])
 
 	const { data: dataEntries, isLoading: isLoadingEntries, isError: isErrorEntries } = useListCalendarEntries(
-		getActor(),
+		calendarActor,
 		Principal.fromText(userId!),
 		() => console.log('success'),
 		() => console.log('error')
@@ -61,8 +52,6 @@ const CalendarView = () => {
 				isLoading={isLoadingEntries}
 				isError={isErrorEntries}
 			></CalendarEntryList>
-
-			<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/create`} className="m-1">Create Entry</Link>
 		</Container>
 	)
 }

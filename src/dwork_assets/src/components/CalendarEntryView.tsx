@@ -3,32 +3,22 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 
 import { AuthClientContext } from '../App'
-
-import { AuthClient } from '@dfinity/auth-client'
+import { useCalendarActor } from '../hooks'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, CalendarEntry } from '../../../declarations/calendar/calendar.did'
-
-import { createActor, canisterId } from '../../../declarations/calendar'
+import { CalendarEntry } from '../../../declarations/calendar/calendar.did'
 
 import { useReadCalendarEntry } from '../hooks'
 
 const CalendarEntryView = () => {
 	const { userId, entryId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(canisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const calendarActor = useCalendarActor(authClient)
 
 	// useEffect(() => {}, [])
 
 	const { data, isLoading, isError } = useReadCalendarEntry(
-		getActor(),
+		calendarActor,
 		Principal.fromText(userId!),
 		parseInt(entryId!),
 		() => console.log('success'),

@@ -3,32 +3,20 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 
 import { AuthClientContext } from '../App'
+import { MarketInfo } from '../../../declarations/market/market.did'
 
-import { Principal } from '@dfinity/principal'
-import { AuthClient } from '@dfinity/auth-client'
-import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
-
-import { createActor } from '../../../declarations/market'
-
-import { useReadProfile, useReadMarketInfo, useListConcepts, useListContracts, useListProfiles } from '../hooks'
-import { ConceptList, ContractList } from './'
+import { useMarketActor, useReadProfile, useReadMarketInfo, useListConcepts, useListContracts, useListInvitations } from '../hooks'
+import { ConceptList, ContractList, InvitationList } from './'
 
 const MarketView = () => {
 	const { marketId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const marketActor = useMarketActor(authClient, marketId!)
 
 	useEffect(() => {}, [])
 
 	const { data, isLoading, isError } = useReadMarketInfo(
-		getActor(),
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -38,7 +26,7 @@ const MarketView = () => {
 		isLoading: isLoadingConcepts,
 		isError: isErrorConcepts,
 	} = useListConcepts(
-		getActor(),
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -48,7 +36,17 @@ const MarketView = () => {
 		isLoading: isLoadingContracts,
 		isError: isErrorContracts,
 	} = useListContracts(
-		getActor(),
+		marketActor,
+		() => console.log('success'),
+		() => console.log('error')
+	)
+
+	const {
+		data: dataInvitations,
+		isLoading: isLoadingInvitations,
+		isError: isErrorInvitations,
+	} = useListInvitations(
+		marketActor,
 		() => console.log('success'),
 		() => console.log('error')
 	)
@@ -58,17 +56,17 @@ const MarketView = () => {
 		isLoading: isLoadingProfile,
 		isError: isErrorProfile,
 	} = useReadProfile(
-		getActor(),
+		marketActor,
 		authClient?.getIdentity().getPrincipal()!,
 		() => console.log('success read user'),
 		() => console.log('error read user')
 	)
 
-	if (isLoading || isLoadingProfile || isLoadingConcepts || isLoadingContracts) {
+	if (isLoading ) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isError || isErrorProfile || isErrorConcepts || isErrorConcepts) {
+	if (isError) {
 		return <p>Error</p>
 	}
 
@@ -108,6 +106,13 @@ const MarketView = () => {
 					<Col xs={9}>{data?.description}</Col>
 				</Row>
 			</div>
+
+			<h3>Invitations</h3>
+			<InvitationList
+				data={dataInvitations || []}
+				isLoading={isLoadingInvitations}
+				isError={isErrorInvitations}
+			></InvitationList>
 
 			<h3>Contracts</h3>
 			<ContractList

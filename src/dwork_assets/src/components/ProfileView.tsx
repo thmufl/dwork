@@ -5,29 +5,19 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 import { AuthClientContext } from '../App'
 
 import { Principal } from '@dfinity/principal'
-import { AuthClient } from '@dfinity/auth-client'
-import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
+import { MarketInfo } from '../../../declarations/market/market.did'
 
-import { createActor } from '../../../declarations/market'
-
-import { useReadProfile } from '../hooks'
+import { useMarketActor, useReadProfile } from '../hooks'
 
 const ProfileView = () => {
 	const { marketId, userId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const marketActor = useMarketActor(authClient, marketId!)
 
 	// useEffect(() => {}, [])
 
 	const { data, isLoading, isError } = useReadProfile(
-		getActor(),
+		marketActor,
 		Principal.fromText(userId!),
 		() => console.log('success'),
 		() => console.log('error')

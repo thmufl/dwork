@@ -11,22 +11,24 @@ import {
 } from '../../../declarations/market/market.did'
 
 import { AuthClientContext } from '../App'
-import { useAddProfile} from '../hooks/useMarket'
+import { useAddProfile} from '../hooks'
 
 const ProfileList = (props: {
 	data: ProfileInfo[]
 	isLoading: any
-	isError: any
+	isRefetching: any,
+	isError: any,
+	isErrorRefetching: any
 }) => {
 	const { marketId } = useParams()
-	const { data, isLoading, isError } = props
+	const { data, isLoading, isRefetching, isError, isErrorRefetching } = props
 	const { register, watch } = useForm<{ name: string }>()
 
-	if (isLoading) {
+	if (isLoading || isRefetching) {
 		return <Spinner animation="border" variant="secondary" />
 	}
 
-	if (isError) {
+	if (isError || isErrorRefetching) {
 		return <p>Error</p>
 	}
 
@@ -38,12 +40,12 @@ const ProfileList = (props: {
 			>
 				Add Profile
 			</Link>
-			<Form autoComplete="off">
+			{/* <Form autoComplete="off">
 				<Form.Control
 					{...register('name')}
 					placeholder="Filter profiles by name."
 				/>
-			</Form>
+			</Form> */}
 
 			<ListGroup>
 				{data

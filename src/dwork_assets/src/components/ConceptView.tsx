@@ -4,29 +4,18 @@ import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
 
 import { AuthClientContext } from '../App'
 
-import { AuthClient } from '@dfinity/auth-client'
-import { ActorSubclass } from '@dfinity/agent'
-import { _SERVICE, MarketInfo } from '../../../declarations/market/market.did'
-
-import { createActor } from '../../../declarations/market'
-
-import { useReadConcept } from '../hooks'
+import { MarketInfo } from '../../../declarations/market/market.did'
+import { useMarketActor, useReadConcept } from '../hooks'
 
 const ConceptView = () => {
 	const { marketId, conceptId } = useParams()
 	const authClient = useContext(AuthClientContext)
-
-	const getActor = (): ActorSubclass<_SERVICE> =>
-		createActor(marketId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
+	const marketActor = useMarketActor(authClient, marketId!)
 
 	// useEffect(() => {}, [])
 
 	const { data, isLoading, isError } = useReadConcept(
-		getActor(),
+		marketActor,
 		parseInt(conceptId!),
 		() => console.log('success'),
 		() => console.log('error')

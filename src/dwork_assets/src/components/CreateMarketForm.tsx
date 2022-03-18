@@ -4,24 +4,15 @@ import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 
 import { Principal } from '@dfinity/principal'
-import { ActorSubclass, AnonymousIdentity } from '@dfinity/agent'
 
-import { _SERVICE, MarketInfo } from '../../../declarations/dwork/dwork.did'
-import { dwork, createActor, canisterId } from '../../../declarations/dwork'
-
+import { MarketInfo } from '../../../declarations/dwork/dwork.did'
 import { AuthClientContext } from '../App'
-import { useCreateMarket } from '../hooks/useDWork'
+import { useDWorkActor, useCreateMarket } from '../hooks'
 
 const CreateMarketForm = () => {
 	const authClient = useContext(AuthClientContext)
+	const dWorkActor = useDWorkActor(authClient)
 	const navigate = useNavigate()
-
-	const getActor = () =>
-		createActor(canisterId!, {
-			agentOptions: {
-				identity: authClient?.getIdentity(),
-			},
-		})
 
 	const {
 		mutateAsync: createMarket,
@@ -30,7 +21,7 @@ const CreateMarketForm = () => {
 		isError,
 		error,
 	} = useCreateMarket(
-		getActor(),
+		dWorkActor,
 		() => console.log('success create market'),
 		() => console.log('error create market')
 	)

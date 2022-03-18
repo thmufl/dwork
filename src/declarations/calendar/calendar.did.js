@@ -17,6 +17,18 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(CalendarEntry)],
         ['query'],
       ),
+    'listEntriesOf' : IDL.Func(
+        [IDL.Vec(IDL.Principal)],
+        [
+          IDL.Vec(
+            IDL.Record({
+              'principal' : IDL.Principal,
+              'entries' : IDL.Vec(CalendarEntry),
+            })
+          ),
+        ],
+        ['query'],
+      ),
     'readEntry' : IDL.Func(
         [IDL.Principal, IDL.Nat32],
         [IDL.Opt(CalendarEntry)],

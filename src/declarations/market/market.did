@@ -23,20 +23,33 @@ type Market =
    addProfile: (ProfileInfo) -> ();
    createConcept: (ConceptInfo__1) -> (nat32);
    createContract: (ContractInfo) -> (nat32);
+   createInvitation: (InvitationInfo) -> (nat32);
    deleteConcept: (nat32) -> ();
    deleteContract: (nat32) -> ();
+   deleteInvitation: (nat32) -> ();
    deleteProfile: (principal) -> ();
+   findProfilesByConcept: (vec ConceptInfo__1) -> (vec ProfileInfo) query;
    listConcepts: () -> (vec ConceptInfo__1) query;
    listContracts: () -> (vec ContractInfo) query;
+   listInvitations: () -> (vec InvitationInfo) query;
    listProfiles: () -> (vec ProfileInfo) query;
    readConcept: (nat32) -> (opt ConceptInfo__1) query;
    readContract: (nat32) -> (opt ContractInfo) query;
    readInfo: () -> (MarketInfo) query;
+   readInvitation: (nat32) -> (opt InvitationInfo) query;
    readProfile: (principal) -> (opt ProfileInfo) query;
    updateConcept: (ConceptInfo__1) -> (nat32);
    updateContract: (ContractInfo) -> (nat32);
    updateInfo: (MarketInfo) -> ();
+   updateInvitation: (InvitationInfo) -> (nat32);
    updateProfile: (ProfileInfo) -> (ProfileInfo);
+ };
+type InvitationInfo = 
+ record {
+   concepts: vec ConceptInfo;
+   description: text;
+   id: nat32;
+   title: text;
  };
 type ContractInfo = 
  record {

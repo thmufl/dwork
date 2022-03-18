@@ -1,28 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import * as d3 from 'd3'
+import dayjs from 'dayjs'
 import { useD3 } from '../hooks/useD3'
 
-// import { CalendarEntry } from '../../../declarations/market/market.did'
+import {
+	CalendarEntry,
+} from '../../../declarations/calendar/calendar.did'
+import {
+	ProfileInfo,
+} from '../../../declarations/market/market.did'
 
-type CalendarEntry = {
-	date: { begin: Date, end: Date }
-	title: string
-}
-
-const Calendar = (props: {
-	entries: CalendarEntry[],
-  interval: { begin: Date, end: Date },
+const CalendarSelect = (props: {
+	//profile: ProfileInfo,
+	calendarEntries: CalendarEntry[],
+	period: { begin: Date, end: Date },
 	width: number
 	height: number
-	onClick: (event: MouseEvent, entries: any) => any
+	onClick: (event: MouseEvent, data: any) => any
 }) => {
-	const { entries, interval, width, height, onClick } = props
+
+	const { calendarEntries, period, width, height, onClick } = props
 
 	const ref = useD3(
 		(svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>) => {
 			const nowDate = Date.now()
 			const width = svg.node()?.getBoundingClientRect().width || 100
-			const scale = d3.scaleTime().domain([interval.begin, interval.end]).range([0, width])
+			const scale = d3.scaleTime().domain([period.begin, period.end]).range([0, width])
 
 			const axis = (g: any) =>
 				g
@@ -35,13 +38,6 @@ const Calendar = (props: {
 					)
 					.attr('color', 'lightgrey')
 			svg.select('.time-axis').call(axis)
-
-			const data = entries.filter((entry) => {
-				return (
-					(entry.date.begin >= interval.begin && entry.date.begin <= interval.end) ||
-					(entry.date.end >= interval.begin && entry.date.end <= interval.end)
-				)
-			})
 
 			const now = svg
 				.selectAll('.now')
@@ -61,7 +57,7 @@ const Calendar = (props: {
 			const entry = svg
 				.select('.entries')
 				.selectAll('.entry')
-				.data(data, (d) => (d as CalendarEntry).date.begin.toString())
+				.data(calendarEntries, (d) => (d as CalendarEntry).date.begin.toString())
 				.join('rect')
 				.classed('entry', true)
 				.on('click', onClick)
@@ -80,24 +76,24 @@ const Calendar = (props: {
 						scale(new Date(Number(d.date.begin)))
 				)
 				.attr('height', height - 15)
-				// .attr('fill', (d) => {
-				// 	switch (Object.keys(d.state)[0]) {
-				// 		case 'AVAILABLE':
-				// 			return 'green'
-				// 		case 'RESERVED':
-				// 			return 'orange'
-				// 		case 'BOOKED':
-				// 			return 'red'
-				// 		default:
-				// 			return 'grey'
-				// 	}
-				// })
+				.attr('fill', (d) => {
+					switch (Object.keys('BOOKED')[0]) {
+						case 'AVAILABLE':
+							return 'green'
+						case 'RESERVED':
+							return 'orange'
+						case 'BOOKED':
+							return 'red'
+						default:
+							return 'grey'
+					}
+				})
 				.attr('opacity', 0.7)
 
 			// const period = svg
 			// 	.selectAll('.period')
 			// 	.data([1])
-      //   .enter()
+			//   .enter()
 			// 	.append('rect')
 			// 	.classed('period', true)
 
@@ -109,7 +105,7 @@ const Calendar = (props: {
 			// 	.attr('fill', 'blue')
 			// 	.attr('opacity', 0.1)
 		},
-		[entries, interval]
+		[calendarEntries]
 	)
 
 	return (
@@ -119,4 +115,4 @@ const Calendar = (props: {
 		</svg>
 	)
 }
-export default Calendar
+export default CalendarSelect

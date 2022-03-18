@@ -1,6 +1,7 @@
 import Debug "mo:base/Debug";
 import Principal "mo:base/Principal";
 import Array "mo:base/Array";
+import Iter "mo:base/Iter";
 import List "mo:base/List";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
@@ -8,6 +9,7 @@ import Nat32 "mo:base/Nat32";
 
 import Types "Types";
 import Concepts "Concepts";
+import Calendar "canister:calendar";
 
 module Profiles = {
 
@@ -24,6 +26,29 @@ module Profiles = {
 
     public func getId() : Principal {
       id;
+    };
+
+    public func getConcepts() : [ConceptInfo] {
+      concepts;
+    };
+
+    public func hasConcept(concept : ConceptInfo) : Bool {
+      let result = Array.find<ConceptInfo>(concepts, func (c) { c.id == concept.id });
+      Debug.print("hasConcept: " # debug_show(result));
+
+      switch (result) {
+        case null false;
+        case _ true;
+      };
+    };
+
+    public func hasAllConcepts(c : [ConceptInfo]) : Bool {
+      var result = true;
+      for(concept in c.vals()) {
+        if(not hasConcept(concept)) { result := false; };
+      };
+      Debug.print("hasAllConcepts: " # debug_show(result));
+      result;
     };
 
     public func info() : ProfileInfo {
@@ -63,6 +88,14 @@ module Profiles = {
         infos := Array.append(infos, [profile.info()]);
       };
       infos;
+    };
+
+    public func findProfilesByConcept(concepts : [ConceptInfo]) : [ProfileInfo] {
+      Array.mapFilter<Profile, ProfileInfo>(Iter.toArray(profiles.vals()),
+        func (profile) {
+          if (profile.hasAllConcepts(concepts)) ?profile.info() else null;
+        }
+      );
     };
   };
 };

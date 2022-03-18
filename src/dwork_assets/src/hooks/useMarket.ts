@@ -7,6 +7,7 @@ import {
 	ProfileInfo,
 	ConceptInfo,
 	ContractInfo,
+	InvitationInfo
 } from '../../../declarations/market/market.did'
 
 export const useReadMarketInfo = (
@@ -152,6 +153,23 @@ export const useListProfiles = (
 	)
 }
 
+export const useFindProfilesByConcept = (
+	actor: ActorSubclass<_SERVICE>,
+	concepts: ConceptInfo[],
+	onSuccess: ((data: ProfileInfo[]) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.findProfilesByConcept(concepts)
+	return useQuery<ProfileInfo[], Error>(
+		['profile-infos', Actor.canisterIdOf(actor).toText()],
+		action,
+		{
+			onSuccess,
+			onError,
+		},
+	)
+}
+
 // Contract
 
 export const useUpdateContract = (
@@ -229,6 +247,90 @@ export const useListContracts = (
 							begin: BigInt(contract.date.begin),
 							end: BigInt(contract.date.end),
 						},
+					}
+					return adapted
+				}),
+		}
+	)
+}
+
+// Invitation
+
+export const useUpdateInvitation = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: number) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = (invitation: InvitationInfo) => {
+		let adapted: InvitationInfo = {
+			...invitation,
+			// date: {
+			// 	begin: BigInt(invitation.date.begin),
+			// 	end: BigInt(invitation.date.end),
+			// },
+		}
+		return adapted.id === 0
+			? actor.createInvitation(adapted)
+			: actor.updateInvitation(adapted)
+	}
+	return useMutation(action, { onSuccess, onError })
+}
+
+export const useReadInvitation = (
+	actor: ActorSubclass<_SERVICE>,
+	invitationId: number,
+	onSuccess: ((data: InvitationInfo) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.readInvitation(invitationId)
+	return useQuery<InvitationInfo[], Error, InvitationInfo | undefined>(
+		['invitation-info', Actor.canisterIdOf(actor).toText(), invitationId],
+		action,
+		{
+			onError,
+			select: (data: InvitationInfo[]) =>
+				data && data[0]
+					? {
+							...data[0],
+							// date: {
+							// 	begin: data[0].date.begin,
+							// 	end: data[0].date.end,
+							// },
+					  }
+					: undefined,
+		}
+	)
+}
+
+export const useDeleteInvitation = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: void) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = (id: number) => actor.deleteInvitation(id)
+	return useMutation(action, { onSuccess, onError })
+}
+
+export const useListInvitations = (
+	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: InvitationInfo[]) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.listInvitations()
+
+	return useQuery<InvitationInfo[], Error, InvitationInfo[]>(
+		['invitation-infos', Actor.canisterIdOf(actor).toText()],
+		action,
+		{
+			onError,
+			select: (data: InvitationInfo[]) =>
+				data.map((invitation) => {
+					let adapted: InvitationInfo = {
+						...invitation,
+						// date: {
+						// 	begin: BigInt(invitation.date.begin),
+						// 	end: BigInt(invitation.date.end),
+						// },
 					}
 					return adapted
 				}),

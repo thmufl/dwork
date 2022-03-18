@@ -48,6 +48,14 @@ public type ConceptInfo = {
     // modified : Time;
   };
 
+  public type InvitationInfo = {
+    id : Nat32;
+    title : Text;
+    description : Text;
+    concepts : [ConceptInfo];
+    // contracts : [ContractInfo]
+  };
+
   public type CalendarEntry = {
     id : Nat32;
     creator : Principal;
