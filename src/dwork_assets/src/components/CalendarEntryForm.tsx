@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Container, Form, ListGroup, Button, Spinner } from 'react-bootstrap'
+import { Container, Form, ListGroup, Button, Spinner, Row, Col } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
+import dayjs from 'dayjs'
 
 import { Principal } from '@dfinity/principal'
 import { useCalendarActor } from '../hooks'
@@ -11,7 +12,10 @@ import {
 	useReadCalendarEntry,
 	useUpdateCalendarEntry,
 	useDeleteCalendarEntry,
+	useListCalendarEntries
 } from '../hooks'
+
+import { CalendarSelect } from './'
 import { CalendarEntryAdapter } from '../types'
 
 const CalendarEntryForm = () => {
@@ -22,6 +26,21 @@ const CalendarEntryForm = () => {
 
 	const { register, watch, handleSubmit, reset } =
 		useForm<CalendarEntryAdapter>()
+
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toISOString().substring(0, 16)
+	)
+
+	const {
+		data: dataEntries,
+		isLoading: isLoadingEntries,
+		isError: isErrorEntries,
+	} = useListCalendarEntries(
+		calendarActor,
+		Principal.fromText(userId!),
+		() => console.log('success'),
+		() => console.log('error')
+	)
 
 	const { data, isLoading, isError } = useReadCalendarEntry(
 		calendarActor,
@@ -57,8 +76,7 @@ const CalendarEntryForm = () => {
 	)
 
 	useEffect(() => {
-		if (data)
-			reset(data)
+		if (data) reset(data)
 	}, [data])
 
 	const onSubmit = async (data: CalendarEntryAdapter) => {
@@ -80,6 +98,47 @@ const CalendarEntryForm = () => {
 			<div className="small">
 				User: {authClient?.getIdentity().getPrincipal().toText()}
 			</div>
+			<Row>
+				<Col xs={1}>
+					<Button
+						onClick={() => {
+							const nextDay = dayjs(Date.parse(selectedDate)).subtract(1, 'day')
+							setSelectedDate(nextDay.toDate().toISOString().substring(0, 16))
+						}}
+					>
+						Prev
+					</Button>
+				</Col>
+				<Col xs={3}>
+					<Form.Control
+						type="datetime-local"
+						value={selectedDate}
+						onChange={(e) => setSelectedDate(e.target.value)}
+					/>
+				</Col>
+				<Col xs={1}>
+					<Button
+						onClick={() => {
+							const nextDay = dayjs(Date.parse(selectedDate)).add(1, 'day')
+							setSelectedDate(nextDay.toDate().toISOString().substring(0, 16))
+						}}
+					>
+						Next
+					</Button>
+				</Col>
+			</Row>
+
+			<CalendarSelect
+				calendarData={dataEntries || []}
+				period={{
+					begin: dayjs(Date.parse(selectedDate)).startOf('day').toDate(),
+					end: dayjs(Date.parse(selectedDate)).endOf('day').toDate(),
+				}}
+				gridMinutes={30}
+				width={500}
+				height={40}
+				onClick={(event, data) => console.log('click', data)}
+			/>
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control {...register('creator')} required placeholder="Creator" />
@@ -104,19 +163,19 @@ const CalendarEntryForm = () => {
 						{...register('status')}
 						type="radio"
 						value="AVAILABLE"
-            label="Available"
+						label="Available"
 					/>
-          <Form.Check
+					<Form.Check
 						{...register('status')}
 						type="radio"
 						value="PROVISIONAL"
-            label="Provisional"
+						label="Provisional"
 					/>
-          <Form.Check
+					<Form.Check
 						{...register('status')}
 						type="radio"
 						value="UNAVAILABLE"
-            label="Unavailable"
+						label="Unavailable"
 					/>
 				</Form.Group>
 				<Form.Control {...register('link')} placeholder="Link" />
@@ -144,7 +203,11 @@ const CalendarEntryForm = () => {
 				<Button
 					className="m-1"
 					variant="primary"
-					onClick={() => entryId ? navigate(`/calendars/${userId}/entries/${entryId}`) : navigate(`/calendars/${userId}`) }
+					onClick={() =>
+						entryId
+							? navigate(`/calendars/${userId}/entries/${entryId}`)
+							: navigate(`/calendars/${userId}`)
+					}
 					disabled={isLoading || isUpdating}
 				>
 					Cancel

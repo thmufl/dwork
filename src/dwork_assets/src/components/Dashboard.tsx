@@ -56,11 +56,12 @@ const Dashboard = () => {
 			></CalendarEntryList>
 
 			<CalendarSelect
-				calendarEntries={dataCalendar || []}
+				calendarData={dataCalendar || []}
 				period={{
 					begin: dayjs().startOf('week').toDate(),
 					end: dayjs().endOf('week').toDate(),
 				}}
+				gridMinutes={30}
 				width={500}
 				height={50}
 				onClick={() => console.log('click')}

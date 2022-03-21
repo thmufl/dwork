@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Container, Spinner, Button, Row, Col } from 'react-bootstrap'
+import { Container, Spinner, Button, Row, Col, Form } from 'react-bootstrap'
 
 import { AuthClientContext } from '../App'
 
@@ -9,11 +9,17 @@ import dayjs from 'dayjs'
 
 import { useCalendarActor, useListCalendarEntries } from '../hooks'
 import { CalendarEntryList, CalendarSelect } from './'
+import { bsSizes } from 'react-bootstrap/lib/utils/bootstrapUtils'
+import { color } from 'd3'
 
 const CalendarView = () => {
 	const { userId } = useParams()
 	const authClient = useContext(AuthClientContext)
 	const calendarActor = useCalendarActor(authClient)
+
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toISOString().substring(0, 16)
+	)
 
 	useEffect(() => {}, [])
 
@@ -48,15 +54,46 @@ const CalendarView = () => {
 				isError={isErrorEntries}
 			></CalendarEntryList>
 
+			<Row>
+				<Col xs={1}>
+					<Button
+						onClick={() => {
+							const nextDay = dayjs(Date.parse(selectedDate)).subtract(1, 'day')
+							setSelectedDate(nextDay.toDate().toISOString().substring(0, 16))
+						}}
+					>
+						Prev
+					</Button>
+				</Col>
+				<Col xs={3}>
+					<Form.Control
+						type="datetime-local"
+						value={selectedDate}
+						onChange={(e) => setSelectedDate(e.target.value)}
+					/>
+				</Col>
+				<Col xs={1}>
+					<Button
+						onClick={() => {
+							const nextDay = dayjs(Date.parse(selectedDate)).add(1, 'day')
+							setSelectedDate(nextDay.toDate().toISOString().substring(0, 16))
+						}}
+					>
+						Next
+					</Button>
+				</Col>
+			</Row>
+
 			<CalendarSelect
-				calendarEntries={dataEntries || []}
+				calendarData={dataEntries || []}
 				period={{
-					begin: dayjs().startOf('day').toDate(),
-					end: dayjs().endOf('day').toDate(),
+					begin: dayjs(Date.parse(selectedDate)).startOf('day').toDate(),
+					end: dayjs(Date.parse(selectedDate)).endOf('day').toDate(),
 				}}
+				gridMinutes={30}
 				width={500}
-				height={50}
-				onClick={() => console.log('click')}
+				height={40}
+				onClick={(event, data) => console.log('click', data)}
 			/>
 		</Container>
 	)
