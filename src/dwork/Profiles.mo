@@ -60,29 +60,39 @@ module Profiles = {
 
     let profiles = HashMap.HashMap<Principal, Profile>(8, Principal.equal, Principal.hash);
 
-    public func add(profile : ProfileInfo) : () {
+    public func addOne(profile : ProfileInfo) : () {
       let newProfile = Profiles.Profile(profile);
       profiles.put(profile.id, newProfile);
     };
 
-    public func read(id: Principal) : ?Profile {
+    public func readOne(id: Principal) : ?Profile {
       let profile = switch (profiles.get(id)) {
         case null null;
         case (?profile) ?profile;
       };
     };
 
-    public func update(profile : ProfileInfo) : ProfileInfo {
+    public func readMany(principals : [Principal]) : [Profile] {
+      Array.mapFilter<Principal, Profile>(principals,
+        func (principal) {
+          let profile = switch (profiles.get(principal)) {
+            case null null;
+            case (?profile) ?profile;
+          };
+        });
+    };
+
+    public func updateOne(profile : ProfileInfo) : ProfileInfo {
       let newProfile = Profiles.Profile(profile);
       let oldProfile = profiles.replace(profile.id, newProfile);
       newProfile.info();
     };
 
-    public func delete(id: Principal) : () {
+    public func deleteOne(id: Principal) : () {
       profiles.delete(id);
     };
 
-    public func list() : [ProfileInfo] {
+    public func listAll() : [ProfileInfo] {
       var infos = [] : [ProfileInfo];
       for(profile in profiles.vals()) {
         infos := Array.append(infos, [profile.info()]);

@@ -70,6 +70,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(ProfileInfo)],
         ['query'],
       ),
+    'readProfiles' : IDL.Func(
+        [IDL.Vec(IDL.Principal)],
+        [IDL.Vec(ProfileInfo)],
+        ['query'],
+      ),
     'updateConcept' : IDL.Func([ConceptInfo__1], [IDL.Nat32], []),
     'updateContract' : IDL.Func([ContractInfo], [IDL.Nat32], []),
     'updateInfo' : IDL.Func([MarketInfo], [], []),

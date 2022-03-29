@@ -109,13 +109,13 @@ const MarketView = () => {
 			></ConceptList>
 
 			<h3>Profiles</h3>
-			<ProfileList
+			{/* <ProfileList
 				data={dataProfiles || []}
 				isLoading={isLoadingProfiles}
 				isRefetching={isRefetchingProfiles}
 				isError={isErrorProfiles}
 				isErrorRefetching={isRefetchErrorProfiles}
-			></ProfileList>
+			></ProfileList> */}
 		</Container>
 	)
 }

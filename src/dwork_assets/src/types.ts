@@ -1,3 +1,5 @@
+import { ProfileInfo } from '../../declarations/market/market.did'
+
 export type CalendarEntryAdapter = {
   id: number,
   creator: string,
@@ -5,8 +7,8 @@ export type CalendarEntryAdapter = {
   title: string,
   description: string,
   date: {
-    begin: string,
-    end: string
+    begin: Date | string | undefined,
+    end: Date | string | undefined
   },
   place: string,
   status: string,

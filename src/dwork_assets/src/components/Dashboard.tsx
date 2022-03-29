@@ -14,7 +14,7 @@ import {
 	useDWorkActor,
 	useCreateMarket,
 	useReadMarkets,
-	useListCalendarEntries,
+	useListCalendarEntriesOfUser,
 } from '../hooks'
 
 const Dashboard = () => {
@@ -26,7 +26,7 @@ const Dashboard = () => {
 		data: dataCalendar,
 		isLoading: isLoadingCalendar,
 		isError: isErrorCalendar,
-	} = useListCalendarEntries(
+	} = useListCalendarEntriesOfUser(
 		calendarActor,
 		authClient?.getIdentity()
 			? authClient?.getIdentity().getPrincipal()
@@ -55,7 +55,7 @@ const Dashboard = () => {
 				isError={isErrorCalendar}
 			></CalendarEntryList>
 
-			<CalendarSelect
+			{/* <CalendarSelect
 				calendarData={dataCalendar || []}
 				period={{
 					begin: dayjs().startOf('week').toDate(),
@@ -64,8 +64,9 @@ const Dashboard = () => {
 				gridMinutes={30}
 				width={500}
 				height={50}
+				selected={{begin: undefined, end: undefined}}
 				onClick={() => console.log('click')}
-			/>
+			/> */}
 
 			<Link
 				to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}`}

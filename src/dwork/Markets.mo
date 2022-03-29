@@ -1,5 +1,6 @@
 import Debug "mo:base/Debug";
 import Principal "mo:base/Principal";
+import Array "mo:base/Array";
 import List "mo:base/List";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
@@ -68,26 +69,31 @@ shared({ caller = initializer }) actor class Market(init: { name : Text; descrip
 
   public shared({ caller }) func addProfile(profile : ProfileInfo) : async () {
     Debug.print(debug_show(caller) # ": add profile");
-    profileRegistry.add(profile);
+    profileRegistry.addOne(profile);
   };
 
   public query func readProfile(id: Principal) : async ?ProfileInfo {
-    let profile = switch (profileRegistry.read(id)) {
+    let profile = switch (profileRegistry.readOne(id)) {
       case null null;
       case (?profile) ?profile.info();
     };
   };
 
+  public query func readProfiles(ids: [Principal]) : async [ProfileInfo] {
+    let profiles = profileRegistry.readMany(ids);
+    Array.map<Profiles.Profile, ProfileInfo>(profiles, func (profile) { profile.info(); });
+  };
+
   public shared({ caller }) func updateProfile(profile : ProfileInfo) : async ProfileInfo {
-    profileRegistry.update(profile);
+    profileRegistry.updateOne(profile);
   };
 
   public shared({ caller }) func deleteProfile(id: Principal) : async () {
-    profileRegistry.delete(id);
+    profileRegistry.deleteOne(id);
   };
 
   public query func listProfiles() : async [ProfileInfo] {
-    profileRegistry.list();
+    profileRegistry.listAll();
   };
 
   public query func findProfilesByConcept(concepts : [ConceptInfo]) : async [ProfileInfo] {

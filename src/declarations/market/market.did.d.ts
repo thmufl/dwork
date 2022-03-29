@@ -46,6 +46,7 @@ export interface Market {
   'readInfo' : () => Promise<MarketInfo>,
   'readInvitation' : (arg_0: number) => Promise<[] | [InvitationInfo]>,
   'readProfile' : (arg_0: Principal) => Promise<[] | [ProfileInfo]>,
+  'readProfiles' : (arg_0: Array<Principal>) => Promise<Array<ProfileInfo>>,
   'updateConcept' : (arg_0: ConceptInfo__1) => Promise<number>,
   'updateContract' : (arg_0: ContractInfo) => Promise<number>,
   'updateInfo' : (arg_0: MarketInfo) => Promise<undefined>,

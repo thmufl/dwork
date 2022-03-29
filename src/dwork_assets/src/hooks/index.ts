@@ -37,6 +37,8 @@ export { useUpdateCalendarEntry } from './useCalendar'
 export { useReadCalendarEntry } from './useCalendar'
 export { useDeleteCalendarEntry } from './useCalendar'
 export { useListCalendarEntries } from './useCalendar'
+export { useListCalendarEntriesOfUser } from './useCalendar'
+export { useListCalendarEntriesOfUsers } from './useCalendar'
 
 
 

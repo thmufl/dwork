@@ -8,9 +8,6 @@ import { _SERVICE, CalendarEntry } from '../../../declarations/calendar/calendar
 import { createActor } from '../../../declarations/calendar'
 
 import { AuthClientContext } from '../App'
-import { useDeleteCalendarEntry, useListCalendarEntries } from '../hooks/useCalendar'
-import { Actor } from '@dfinity/agent'
-
 import { CalendarEntryAdapter } from '../types'
 
 const CalendarEntryList = (props: {
@@ -52,7 +49,7 @@ const CalendarEntryList = (props: {
 					)
 					.map((entry, index) => (
 						<ListGroup.Item key={index}>
-							<div className="small">{new Date(entry.date.begin).toLocaleString()} - {new Date(entry.date.end).toLocaleString()} {entry.status}</div>
+							<div className="small">{new Date(entry.date.begin!).toLocaleString()} - {new Date(entry.date.end!).toLocaleString()} {entry.status}</div>
 							<Link to={`/calendars/${authClient?.getIdentity().getPrincipal().toText()}/entries/${entry.id}`}>
 								{entry.title}
 							</Link>

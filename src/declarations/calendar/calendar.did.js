@@ -20,20 +20,18 @@ export const idlFactory = ({ IDL }) => {
     'createEntry' : IDL.Func([CalendarEntry], [IDL.Nat32], []),
     'deleteEntry' : IDL.Func([IDL.Principal, IDL.Nat32], [], []),
     'listEntries' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(CalendarEntry)))],
+        ['query'],
+      ),
+    'listEntriesOfUser' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(CalendarEntry)],
         ['query'],
       ),
-    'listEntriesOf' : IDL.Func(
+    'listEntriesOfUsers' : IDL.Func(
         [IDL.Vec(IDL.Principal)],
-        [
-          IDL.Vec(
-            IDL.Record({
-              'principal' : IDL.Principal,
-              'entries' : IDL.Vec(CalendarEntry),
-            })
-          ),
-        ],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(CalendarEntry)))],
         ['query'],
       ),
     'readEntry' : IDL.Func(

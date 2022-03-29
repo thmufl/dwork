@@ -11,7 +11,7 @@ module {
     description : Text;
   };
 
-public type ConceptInfo = {
+  public type ConceptInfo = {
     id : Nat32;
     // owner : Principal;
     preferredLabel : Text;
@@ -44,9 +44,6 @@ public type ConceptInfo = {
     date : TimeInterval;
     place : Text;
     link : Text;
-    // isRoot : Bool;
-    // broader : [?Concept];
-    // narrower : [?Concept];
     // modified : Time;
   };
 

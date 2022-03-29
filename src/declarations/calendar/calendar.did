@@ -23,11 +23,15 @@ type CalendarEntry =
 service : {
   createEntry: (CalendarEntry) -> (nat32);
   deleteEntry: (principal, nat32) -> ();
-  listEntries: (principal) -> (vec CalendarEntry) query;
-  listEntriesOf: (vec principal) ->
+  listEntries: () -> (vec record {
+                            principal;
+                            vec CalendarEntry;
+                          }) query;
+  listEntriesOfUser: (principal) -> (vec CalendarEntry) query;
+  listEntriesOfUsers: (vec principal) ->
    (vec record {
-          entries: vec CalendarEntry;
-          "principal": principal;
+          principal;
+          vec CalendarEntry;
         }) query;
   readEntry: (principal, nat32) -> (opt CalendarEntry) query;
   updateEntry: (CalendarEntry) -> (nat32);

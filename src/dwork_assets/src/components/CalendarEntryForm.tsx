@@ -12,7 +12,7 @@ import {
 	useReadCalendarEntry,
 	useUpdateCalendarEntry,
 	useDeleteCalendarEntry,
-	useListCalendarEntries
+	useListCalendarEntriesOfUser
 } from '../hooks'
 
 import { CalendarSelect } from './'
@@ -35,7 +35,7 @@ const CalendarEntryForm = () => {
 		data: dataEntries,
 		isLoading: isLoadingEntries,
 		isError: isErrorEntries,
-	} = useListCalendarEntries(
+	} = useListCalendarEntriesOfUser(
 		calendarActor,
 		Principal.fromText(userId!),
 		() => console.log('success'),
@@ -128,7 +128,7 @@ const CalendarEntryForm = () => {
 				</Col>
 			</Row>
 
-			<CalendarSelect
+			{/* <CalendarSelect
 				calendarData={dataEntries || []}
 				period={{
 					begin: dayjs(Date.parse(selectedDate)).startOf('day').toDate(),
@@ -137,8 +137,9 @@ const CalendarEntryForm = () => {
 				gridMinutes={30}
 				width={500}
 				height={40}
+				selected={{begin: undefined, end: undefined}}
 				onClick={(event, data) => console.log('click', data)}
-			/>
+			/> */}
 			<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 				<Form.Control {...register('id')} type="hidden" placeholder="Id" />
 				<Form.Control {...register('creator')} required placeholder="Creator" />

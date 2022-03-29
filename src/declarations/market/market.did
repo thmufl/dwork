@@ -38,6 +38,7 @@ type Market =
    readInfo: () -> (MarketInfo) query;
    readInvitation: (nat32) -> (opt InvitationInfo) query;
    readProfile: (principal) -> (opt ProfileInfo) query;
+   readProfiles: (vec principal) -> (vec ProfileInfo) query;
    updateConcept: (ConceptInfo__1) -> (nat32);
    updateContract: (ContractInfo) -> (nat32);
    updateInfo: (MarketInfo) -> ();

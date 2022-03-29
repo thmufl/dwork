@@ -1,13 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Form, ListGroup, Button, Spinner, Badge } from 'react-bootstrap'
+import {
+	Form,
+	ListGroup,
+	Button,
+	Spinner,
+	Badge,
+	Row,
+	Col,
+} from 'react-bootstrap'
 import { X } from 'react-bootstrap-icons'
 
 import { _SERVICE, ConceptInfo } from '../../../declarations/market/market.did'
 import { AuthClientContext } from '../App'
 
 const ConceptSelect = (props: {
-	allConcepts: ConceptInfo[]
+	concepts: ConceptInfo[]
 	selectedConcepts: ConceptInfo[]
 	handleSelectionChanged: any
 	isLoading: any
@@ -15,7 +23,7 @@ const ConceptSelect = (props: {
 }) => {
 	const { marketId } = useParams()
 	const {
-		allConcepts,
+		concepts,
 		selectedConcepts,
 		handleSelectionChanged,
 		isLoading,
@@ -43,29 +51,13 @@ const ConceptSelect = (props: {
 
 	return (
 		<>
-			{/* <Link to={`/markets/${marketId}/concepts/create`}>Create Concept</Link> */}
-			{/* <Form autoComplete="off">
-				<Form.Control
-					{...register('name')}
-					placeholder="Filter concepts by label."
-				/>
-			</Form> */}
-
-			<div>
-				{selected.map((concept, index) => (
-					<Badge key={index} className="m-1" pill>
-						{concept.preferredLabel}
-						<X onClick={(event) => handleSelect(event, concept)} />
-					</Badge>
-				))}
-			</div>
 			<ListGroup
 				style={{
-					maxHeight: '270px',
+					maxHeight: '200px',
 					overflowY: 'auto',
 				}}
 			>
-				{allConcepts
+				{concepts
 					.filter((concept) => !selected.find((c) => c.id === concept.id))
 					.map((concept, index) => (
 						<ListGroup.Item
@@ -73,11 +65,16 @@ const ConceptSelect = (props: {
 							onClick={(event) => handleSelect(event, concept)}
 						>
 							{concept.preferredLabel}
-							<br />
-							{concept.description}
 						</ListGroup.Item>
 					))}
 			</ListGroup>
+
+			Selection: {selected.map((concept, index) => (
+				<Badge key={index} className="m-1" pill>
+					{concept.preferredLabel}
+					<X onClick={(event) => handleSelect(event, concept)} />
+				</Badge>
+			))}
 		</>
 	)
 }

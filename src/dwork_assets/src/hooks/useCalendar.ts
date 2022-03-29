@@ -7,8 +7,7 @@ import {
 } from '../../../declarations/calendar/calendar.did'
 
 import { CalendarEntryAdapter } from '../types'
-
-const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
+import { toLocalDateString } from '../helpers'
 
 const encodeStatus = (status: string) => {
 	switch(status) {
@@ -38,8 +37,8 @@ export const useUpdateCalendarEntry = (
 			creator: Principal.fromText(data.creator),
 			user: Principal.fromText(data.user),
 			date: {
-				begin: BigInt(Date.parse(data.date.begin)),
-				end: BigInt(Date.parse(data.date.end)),
+				begin: BigInt(new Date(data.date.begin!).getTime()),
+				end: BigInt(new Date(data.date.end!).getTime()),
 			},
 			status: encodeStatus(data.status)
 		}
@@ -70,12 +69,8 @@ export const useReadCalendarEntry = (
 							creator: data[0].creator.toText(),
 							user: data[0].user.toText(),
 							date: {
-								begin: new Date(Number(data[0].date.begin) - timeZoneOffset)
-									.toISOString()
-									.substring(0, 16),
-								end: new Date(Number(data[0].date.end) - timeZoneOffset)
-									.toISOString()
-									.substring(0, 16),
+								begin: toLocalDateString(new Date(Number(data[0].date.begin))),
+								end: toLocalDateString(new Date(Number(data[0].date.end)))
 							},
 							status: decodeStatus(data[0].status)
 					  }
@@ -96,11 +91,47 @@ export const useDeleteCalendarEntry = (
 
 export const useListCalendarEntries = (
 	actor: ActorSubclass<_SERVICE>,
+	onSuccess: ((data: Map<String, CalendarEntryAdapter[]>) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.listEntries()
+
+	return useQuery<[Principal, CalendarEntry[]][], Error, Map<String, CalendarEntryAdapter[]>>(
+		['calendar-entries'],
+		action,
+		{
+			onError,
+			select: (data: [Principal, CalendarEntry[]][]) => {
+				const map = new Map<String, CalendarEntryAdapter[]>();
+				data.map((entry) => {
+					const adapted = entry[1].map(entry => {
+						let adapted: CalendarEntryAdapter = {
+							...entry,
+							creator: entry.creator.toText(),
+								user: entry.user.toText(),
+								date: {
+									begin: toLocalDateString(new Date(Number(entry.date.begin))),
+									end: toLocalDateString(new Date(Number(entry.date.end))),
+								},
+								status: decodeStatus(entry.status)
+						}
+						return adapted
+					})
+					map.set(entry[0].toText(), adapted)
+				})
+				return map;
+			}
+		}
+	)
+}
+
+export const useListCalendarEntriesOfUser = (
+	actor: ActorSubclass<_SERVICE>,
 	user: Principal,
 	onSuccess: ((data: CalendarEntry[]) => void) | undefined,
 	onError: ((err: Error) => void) | undefined
 ) => {
-	const action = () => actor.listEntries(user)
+	const action = () => actor.listEntriesOfUser(user)
 
 	return useQuery<CalendarEntry[], Error, CalendarEntryAdapter[]>(
 		['calendar-entries', user.toText()],
@@ -114,12 +145,8 @@ export const useListCalendarEntries = (
 						creator: data.creator.toText(),
 							user: data.user.toText(),
 							date: {
-								begin: new Date(Number(data.date.begin) - timeZoneOffset)
-									.toISOString()
-									.substring(0, 16),
-								end: new Date(Number(data.date.end) - timeZoneOffset)
-									.toISOString()
-									.substring(0, 16),
+								begin: toLocalDateString(new Date(Number(data.date.begin))),
+								end: toLocalDateString(new Date(Number(data.date.end))),
 							},
 							status: decodeStatus(data.status)
 					}
@@ -129,6 +156,42 @@ export const useListCalendarEntries = (
 	)
 }
 
+export const useListCalendarEntriesOfUsers = (
+	actor: ActorSubclass<_SERVICE>,
+	users: Principal[],
+	onSuccess: ((data: Map<Principal, CalendarEntryAdapter[]>) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.listEntriesOfUsers(users)
+
+	return useQuery<[Principal, CalendarEntry[]][], Error, Map<Principal, CalendarEntryAdapter[]>>(
+		['calendar-entries-of', users],
+		action,
+		{
+			onError,
+			select: (data: [Principal, CalendarEntry[]][]) => {
+				const map = new Map<Principal, CalendarEntryAdapter[]>();
+				data.map((entry) => {
+					const adapted = entry[1].map(entry => {
+						let adapted: CalendarEntryAdapter = {
+							...entry,
+							creator: entry.creator.toText(),
+								user: entry.user.toText(),
+								date: {
+									begin: toLocalDateString(new Date(Number(entry.date.begin))),
+									end: toLocalDateString(new Date(Number(entry.date.end))),
+								},
+								status: decodeStatus(entry.status)
+						}
+						return adapted
+					})
+					map.set(entry[0], adapted)
+				})
+				return map;
+			}
+		}
+	)
+}
 // export const useUpdateCalendarInfo = (
 // 	actor: ActorSubclass<_SERVICE>,
 // 	onSuccess: ((data: void) => void) | undefined,

@@ -7,13 +7,13 @@ import { Principal } from '@dfinity/principal'
 import { AuthClientContext } from '../App'
 import { ContractAdapter } from '../types'
 import { useMarketActor, useReadContract, useUpdateContract, useDeleteContract } from '../hooks'
+import { toLocalDateString } from '../helpers'
 
 const ContractForm = () => {
 	const { marketId, contractId } = useParams()
 	const authClient = useContext(AuthClientContext)
 	const marketActor = useMarketActor(authClient, marketId!)
 	const navigate = useNavigate()
-	const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000
 
 	const { register, watch, handleSubmit, reset } = useForm<ContractAdapter>()
 
@@ -55,12 +55,8 @@ const ContractForm = () => {
 				contractor: data.contractor.toText(),
 				contractee: data.contractee.toText(),
 				date: {
-					begin: new Date(Number(data.date.begin) - timeZoneOffset)
-						.toISOString()
-						.substring(0, 16),
-					end: new Date(Number(data.date.end) - timeZoneOffset)
-						.toISOString()
-						.substring(0, 16),
+					begin: toLocalDateString(new Date(Number(data.date.begin))),
+					end: toLocalDateString(new Date(Number(data.date.end)))
 				},
 			})
 	}, [data])

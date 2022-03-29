@@ -117,6 +117,23 @@ export const useReadProfile = (
 	)
 }
 
+export const useReadProfiles = (
+	actor: ActorSubclass<_SERVICE>,
+	profileIds: Principal[],
+	onSuccess: ((data: ProfileInfo[]) => void) | undefined,
+	onError: ((err: Error) => void) | undefined
+) => {
+	const action = () => actor.readProfiles(profileIds)
+	return useQuery<ProfileInfo[], Error>(
+		['profile-infos', Actor.canisterIdOf(actor).toText(), profileIds],
+		action,
+		{
+			onError,
+			//select: (data: ProfileInfo[]) => (data && data[0] ? data[0] : undefined),
+		}
+	)
+}
+
 export const useUpdateProfile = (
 	actor: ActorSubclass<_SERVICE>,
 	onSuccess: ((data: ProfileInfo) => void) | undefined,

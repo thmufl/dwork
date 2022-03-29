@@ -56,21 +56,29 @@ actor Calendar {
     ();
   };
 
-  public query func listEntries(user : Principal) : async [CalendarEntry] {
-    let entries = switch (users.get(user)) {
+  public query func listEntries() : async [(Principal, [CalendarEntry])] {
+    var result = List.nil<(Principal, [CalendarEntry])>();
+    for(entry in users.entries()) {
+      result := List.push<(Principal, [CalendarEntry])>((entry.0, List.toArray(entry.1)), result);
+    };
+    List.toArray(result);
+  };
+
+  public query func listEntriesOfUser(principal : Principal) : async [CalendarEntry] {
+    let entries = switch (users.get(principal)) {
       case null [];
       case (?entries) List.toArray(entries);
     };
   };
 
-  public query func listEntriesOf(principals : [Principal]) : async [{principal: Principal; entries: [CalendarEntry]}] {
-    var result = List.nil<{principal: Principal; entries: [CalendarEntry]}>();
+  public query func listEntriesOfUsers(principals : [Principal]) : async [(Principal, [CalendarEntry])] {
+    var result = List.nil<(Principal, [CalendarEntry])>();
     for(principal in principals.vals()) {
       let entries = switch (users.get(principal)) {
         case null [];
         case (?entries) List.toArray(entries);
       };
-      result := List.push<{principal: Principal; entries: [CalendarEntry]}>({principal; entries}, result);
+      result := List.push<(Principal, [CalendarEntry])>((principal, entries), result);
     };
     List.toArray(result);
   };
